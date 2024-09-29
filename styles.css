@@ -1,0 +1,360 @@
+*{
+  box-sizing: border-box;   /*Incluye en el tamaño del elemento el margen y el padding*/
+  margin: 0;                /*Saco el margen externo del contenedor*/
+  padding: 0;               /*saco el margen interno del contenedor*/
+}
+
+a {
+  text-decoration: none;    /*Quito la linea de abajo de los vinculos*/
+  color: black;
+}
+
+body {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-family: "Poppins", sans-serif;
+}
+
+.navbar{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: sticky;
+  top: -2rem;
+}
+
+.navbar-head {
+  background-color: #ededed;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 0.8em;
+  padding: 0.5rem;
+  height: 2rem;
+}
+
+.navbar-head-social a:hover{
+  color: red;
+}
+
+.navbar-head-social i {
+  font-size: 1.4em;
+  margin: 0 0.5rem;
+}
+
+.navbar-body {
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  height: 7rem;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.navbar-body-logo {
+  width: auto;
+
+}
+
+.navbar-body-logo img {
+  height: 100%;
+}
+
+.navbar-body-links {
+  margin-bottom: 1rem;
+}
+.navbar-body-links ul {
+  display: flex;
+  list-style: none;
+  column-gap: 1rem;
+}
+
+.navbar-body-links li{
+  text-align: center;
+  width: max-content;
+  font-size: 1.3vw;
+}
+
+.navbar a {
+  color: #0047d5;
+}
+
+.navbar-body-links li:hover{
+  text-decoration: underline;
+  text-decoration-thickness: 0.2em;   /*Grosor del subrayado*/
+  text-decoration-color: #2794f9;
+  text-underline-position: under;     /*Esecifica la posicion de la decoracion*/
+  font-weight: bold;
+  font-size: 110%;
+}
+
+/* -------------------------------------------------*/
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+/*HOME - MAIN - BIENVENIDA*/
+.main_section_bienvenida {
+  display: flex;
+  background-image: url(recursos/imag1.jpg);     /*Pongo la imagen de fondo*/
+  background-repeat: no-repeat;           /*Le digo a la imagen que no se repita*/
+  background-position: center center;        /*Posiciono la imagen arriba-centrada*/
+  background-size: cover;                 /*Escala la imagen al mayor tamaño posible sin estirarla*/
+  width: 100%;
+  justify-content: center;                /*ajusta el espacio residual de todos los elementos en el eje principal*/
+  align-items: center;                    /*ajusta el espacio residual de todos los elementos en el eje opuesto*/
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section_bienvenida_texto{
+  background-color:rgba(120, 149, 164, 0.674);
+  padding: 1rem;
+  text-align: center;                     /*Centro el texto*/
+  max-width: 47rem;
+}
+
+.section_bienvenida_texto > h2{
+  color: #ffffff;
+  font-size: 5vw;
+  text-shadow: 1px 0px 5px black;
+}
+
+.section_bienvenida_texto > h1{
+  color: hsl(0, 0%, 100%);
+  font-size: 3vw;
+  text-shadow: 3px 0px 3px rgba(0, 0, 0, 0.69);
+}
+
+.section_bienvenida_texto > p{
+  color: #ffffff;
+  font-size: 2vw;
+  text-shadow: 3px 0px 3px rgba(0, 0, 0, 0.69);
+}
+
+.climatec {
+  color: hsl(222, 100%, 50%);
+  font-size: 5vw;
+  text-shadow: 3px 0px 3px rgba(0, 0, 0, 0.69);
+}
+
+/*CUERPO HOME*/
+.main_section {
+  display: flex;
+  flex-direction: column;
+}
+
+.main_section div{
+  width: 50%;
+}
+
+.main_section > section {
+  background-color: #c7ebee;
+  display: flex;
+  padding: 2rem 10rem;
+  width: 100%;
+  column-gap: 3rem;
+}
+
+.main_section_image{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.main_section img{
+  width: 100%;
+  max-width: 20rem;
+  border-radius: 100%;
+}
+
+/*Manejo el contenedor matricula (lo invierto)*/
+#matriculados{
+  display: flex;
+  flex-direction: row-reverse;
+  background-color:inherit;
+}
+
+/* ----------------------------------------- */
+/*CONTACTENOS - MAIN*/
+/* INVITACION */
+.invitacion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-image: linear-gradient(-90deg,#ffffff, #68b5fd);
+  padding: 1.5rem;
+  row-gap: 1rem;
+}
+
+.invitacion > h1 {
+  font-size: 2.2vw;
+  color: #0047d5;
+}
+
+.invitacion > h4 {
+  font-size: 1.5vw;
+  font-weight: 400;
+}
+
+/* FORMULARIO */
+.formulario {
+  background-color: #b2daff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 30rem;
+  margin: 5rem;
+  padding: 20px;
+  border-radius: 40px;
+}
+
+.formulario h2{
+  font-size: 4vw;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5vw;
+  row-gap: 2rem;
+  width: 100%;
+}
+
+.informacion{
+  display: flex;
+  flex-direction: row;
+  column-gap: 2rem;
+}
+
+.informacion > div{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.datos, .detalles{
+  row-gap: 1rem;
+}
+
+.hr {
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.242);
+  border-color: rgb(255, 255, 255);
+  width: 3px;
+}
+
+.form input,button,select,textarea{
+  border-radius: 10px;
+  height: 2.2rem;
+  font-size: 2vw;
+  padding: 0 1rem;
+  width: 100%;
+  margin: 0.2rem 0;
+  border: none;
+}
+
+button {
+  background-color: #6498ff;
+  font-size: 3vw;
+  height: 3.5rem;
+  color: #ffffff;
+}
+
+textarea {
+  height: 100%;
+  resize: vertical;
+}
+
+/* ----------------------------------------- */
+/*PREGUNTAS - MAIN*/
+.main-preguntas {
+display: flex;
+flex-direction: column;
+padding: 0 3rem;
+row-gap: 1rem;
+background-color: #c7ebee;
+}
+
+.main-preguntas > h1 {
+  align-self: center;
+  color: #2794f9;
+  font-size: 4vw;
+  margin: 1.5rem;
+}
+
+.main-preguntas p{
+  margin: .5rem 0 2rem 0;
+}
+
+.main-preguntas li{
+  font-weight: bold;
+}
+
+/* ------------------------------------------------- 
+FOOTER*/
+.foot {
+  background-color: #0047d5;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+/*contacto*/
+.foot-contacto {
+  background-color: #6498ff;
+  text-decoration-color: black;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding:  1rem;
+}
+
+.foot-contacto-logo {
+  display: flex;
+  height: 10rem;
+}
+
+.foot-contacto-logo img{
+  width: auto;
+}
+
+.foot-contacto-datos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: end;
+  row-gap: 0.5rem;
+}
+
+.foot-contacto-datos a{
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.icono {
+  height: 2.5rem;
+}
+
+.icono img{
+  height: inherit;
+  width: auto;
+}
+
+/*small*/
+small{
+  font-size: 1.5vw;
+  font-weight: 600;
+  align-self: center;
+  text-align: center;
+  margin: 0.7rem;
+
+}

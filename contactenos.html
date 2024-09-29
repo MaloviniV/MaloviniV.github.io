@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Contactenos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>    <!--iconos redes-->
+  
+  <link rel="stylesheet" href="styles.css">
+  <!--Carga Letra Montserrat-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-head">
+      <div class="navbar-head-horarios">
+        <p>Lunes A Viernes 9 a 13hs y 16 a 20hs</p>
+      </div>
+      <div class="navbar-head-social">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+      </div>
+    </div>
+    
+    <div class="navbar-body">
+      <div class="navbar-body-logo">
+        <a href="Index.html"><img src="recursos/logo_climatec.png" alt="Logo Climatec"></a>
+      </div>
+      <div class="navbar-body-links">
+        <ul>
+          <li>
+            <a href="index.html">Home</a>
+          </li>
+          <!-- 
+            <li>
+              <a href="#">Nosotros</a>
+            </li>
+            <li>
+              <a href="#">Servicios</a>
+            </li>
+            -->
+          <li>
+            <a href="preguntas.html">Preguntas Frecuentes</a>
+          </li>
+          <li>
+            <a style="text-decoration: underline; text-decoration-thickness: 0.2em;text-decoration-color: #2794f9;text-underline-position: under;" id="contactenos" href="contactenos.html">Contactenos</a>
+          </li>
+        </ul>
+      </div>  
+    </div>
+  </nav>
+<!-- ------------------------------------------------ -->
+  <main class="main">
+    <section class="invitacion">
+      <h1>¡Contáctanos para obtener el mejor servicio!</h1>
+      <h4>Envíanos un mensaje comentándonos sobre tu proyecto o necesidad. Te responderemos a la brevedad.</h4>
+    </section>
+
+    <section class="formulario">
+      <h2>CONTACTO</h2>
+      <form class="form">
+        <div class="informacion">
+          <div class="datos">
+            <div>
+              <label for="nombre">Apellido y Nombre:</label>
+              <input id="nombre" name="nombre" autocomplete="false" type="text">
+            </div>
+            
+            <div>
+              <label for="mail">Mail:</label>
+              <input id="mail" name="mail" type="email">
+            </div>
+            
+            <div>
+              <label for="telefono">Telefono:</label>
+              <input id="telefono" name="telefono" type="tel">
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="detalle">
+            <div class="servicio">
+              <label for="servicio">Servicio:</label>
+              <select  name="servicio" id="servicio">
+                <option value="refrigeracion_residencial"> Refrigeración Recidencial </option>
+                <option value="climatizacion_residencial">  Climatización Recidencial</option>
+                <option value="refrigeracion_comercial"> Refrigeración Comercial </option>
+                <option value="climatizacion_comercial"> Climatización Comercial </option>
+              </select>
+            </div>
+            
+            <textarea name="mensaje" id="mensaje" placeholder="Describa el proyecto o necesidad."></textarea>
+          </div>
+        </div>
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+<!-- ------------------------------------------------ -->
+  <footer class="foot">
+    <section class="foot-contacto">
+      <div class="foot-contacto-logo">
+        <img src="recursos/LOGO BLANCO-Photoroom.png" alt="logo_climatec" width="100">
+      </div>
+
+      <div class="foot-contacto-datos">
+        <div class="foot_contacto_datos_direccion">
+          <a href="#">            
+            <div class="icono"><img src="recursos/ubicacion.png" alt="icon_ubicion" width="50"></div>
+            <div class="foot_contacto_datos_direccion_datos"><p>J. Azurduy esq. M. Sobremonte - Merlo, San Luis</p></div>
+          </a>
+        </div>
+
+        <div class="foot_contacto_datos_telefono">
+          <a href="https://wa.me/5492664705269">
+            <div class="icono"><img src="recursos/telefono-movil.png" alt="icon_correo" width="50"></div>
+            <div class="foot_contacto_datos_tel_datos"><p>266-4705269</p></div>
+          </a>                
+        </div>
+
+        <div class="foot_contacto_datos_mail">
+          <a href="mailto:climatec@mail.com" target="_blank">
+            <div class="icono"><img src="recursos/correo.png" alt="icon_correo" width="50"></div>
+            <div class="foot_contacto_datos_direccion_datos"><p>climatec@mail.com</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
+    <small>© 2024 Climatec Refrigeracion. Todos los derechos reservados.</small>
+  </footer>
+</body>
+</html>
