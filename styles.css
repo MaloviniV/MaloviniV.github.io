@@ -73,7 +73,7 @@ body {
 .navbar-body-links li{
   text-align: center;
   width: max-content;
-  font-size: 1.3vw;
+  font-size: 1.4vw;
 }
 
 .navbar a {
@@ -208,15 +208,14 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  height: 30rem;
+  width: 90%;
   margin: 5rem;
   padding: 20px;
   border-radius: 40px;
 }
 
 .formulario h2{
-  font-size: 4vw;
+  font-size: 3vw;
   margin-bottom: 2rem;
 }
 
@@ -224,7 +223,7 @@ body {
   display: flex;
   flex-direction: column;
   font-size: 1.5vw;
-  row-gap: 2rem;
+  row-gap: 1.5rem;
   width: 100%;
 }
 
@@ -251,14 +250,21 @@ body {
   width: 3px;
 }
 
+
 .form input,button,select,textarea{
   border-radius: 10px;
-  height: 2.2rem;
-  font-size: 2vw;
+  height: 2rem;
+  font-size: 1.8vw;
   padding: 0 1rem;
   width: 100%;
-  margin: 0.2rem 0;
-  border: none;
+  margin: 0.1rem 0;
+  border-style: none;
+}
+
+div .error{
+  border-style: solid;
+  border-color: red;
+  border-width: 3px;
 }
 
 button {
@@ -273,6 +279,18 @@ textarea {
   resize: vertical;
 }
 
+
+#ltaErrores {
+  color: red;
+  font-weight: bolder;
+  margin-top: 5px;
+  margin-left: 30px;
+  align-self: flex-start;
+}
+
+#confEnvio {
+
+}
 /* ----------------------------------------- */
 /*PREGUNTAS - MAIN*/
 .main-preguntas {
@@ -280,7 +298,7 @@ display: flex;
 flex-direction: column;
 padding: 0 3rem;
 row-gap: 1rem;
-background-color: #c7ebee;
+background-color: #dffafc;
 }
 
 .main-preguntas > h1 {

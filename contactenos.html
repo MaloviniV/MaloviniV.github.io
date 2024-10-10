@@ -59,7 +59,7 @@
 
     <section class="formulario">
       <h2>CONTACTO</h2>
-      <form class="form">
+      <form name="formu" class="form" action="" onsubmit="return validarForm()">
         <div class="informacion">
           <div class="datos">
             <div>
@@ -68,8 +68,8 @@
             </div>
             
             <div>
-              <label for="mail">Mail:</label>
-              <input id="mail" name="mail" type="email">
+              <label for="email">E-Mail:</label>
+              <input id="email" name="email" type="email">
             </div>
             
             <div>
@@ -82,8 +82,9 @@
             <div class="servicio">
               <label for="servicio">Servicio:</label>
               <select  name="servicio" id="servicio">
-                <option value="refrigeracion_residencial"> Refrigeración Recidencial </option>
-                <option value="climatizacion_residencial">  Climatización Recidencial</option>
+                <option value="" selected>-- ELIJA EL SERVICIO--</option>
+                <option value="refrigeracion_residencial"> Refrigeración Residencial </option>
+                <option value="climatizacion_residencial">  Climatización Residencial</option>
                 <option value="refrigeracion_comercial"> Refrigeración Comercial </option>
                 <option value="climatizacion_comercial"> Climatización Comercial </option>
               </select>
@@ -94,6 +95,9 @@
         </div>
         <button type="submit">Enviar</button>
       </form>
+
+      <ul id="ltaErrores"></ul>
+      <p id="confEnvio"></p>
     </section>
   </main>
 <!-- ------------------------------------------------ -->
@@ -128,5 +132,6 @@
     </section>
     <small>© 2024 Climatec Refrigeracion. Todos los derechos reservados.</small>
   </footer>
+  <script src="formulario.js"></script>
 </body>
 </html>
