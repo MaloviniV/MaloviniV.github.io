@@ -15,9 +15,9 @@ class Interfaz {         //Recupera los botones, maneja vistas importantes y agr
         this.nombre.focus();
         return;
       }
-      const jugador = new Jugador.crearJugador(txtNombre);
+
       await Data.cargarDatos();
-      Juego.iniciarJuego(10,jugador);
+      Juego.iniciarJuego(10,txtNombre);
       this.viewPlay();
     }));
     this.btnRanking.addEventListener("click", () => this.viewRanking());
@@ -50,7 +50,7 @@ class Interfaz {         //Recupera los botones, maneja vistas importantes y agr
   }
 }
 //Clase para recuperar datos del servidor
-class Data {
+class Data {      //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
   static URL_API = "/app/all";
   static listaPaises = []; 
   
@@ -70,30 +70,102 @@ class Data {
   }
 }
 
-class Juego {
-  static iniciarJuego(cantPreguntas, jugador){
-    const listaPreguntas = this.cargarPreguntas();
+class Juego {     //FALTA CARGAR RANKING
+  static iniciarJuego(cantPreguntas, nombreJugador){
+    const jugador = Jugador.crearJugador(nombreJugador);
+    const listaPreguntas = this.cargarPreguntas(cantPreguntas);
     const ranking = [];           //Lista de estadisticas de los jugadores
-  }
 
-  static cargarPreguntas(){
-    const listaPaises = Data.getPaises(); //Recupero los datos de paises  
+    
+  }
+  //CARGO PREGUNTAS
+  static cargarPreguntas(numPreguntas){
     const preguntas = [];
     const tiposPreguntas = ["capital","flag","borders"];
-
+    
+    for (let index = 0; index < numPreguntas; index++) {
+      let indice = index%tiposPreguntas.length;     //asigno el indice siguiente de forma ciclica entre 0 y 3      
+      const nuevaPregunta = Pregunta.crearPregunta(tiposPreguntas[indice]);
+      
+      //controlo que la pregunta no se encuentre en la lista de preguntas
+      if (preguntas.some((preg) => preg.type===nuevaPregunta.type && preg.answer===nuevaPregunta.answer)) {
+        index--;
+      } else {
+        preguntas.push(nuevaPregunta);      
+      }
+    } 
+    //Devuelvo la lista de preguntas
     return preguntas;
   }
 }
 
 class Pregunta {
-  static crearPregunta(){
-    let tipo;
+  
+  static crearPregunta(tipo){
     let pregunta;
-    const opciones = [];
+    const cantOpciones = 4;
+    const setOpciones = new Set();
     let respuesta;
     let puntos;
+    //Cargo la pregunta, LA RESPUESTA, puntos
+    while (!pregunta) {
+      let pais = this.recuperarPaisAleatorio();
+      console.log(pais);
+      switch (tipo) {
+        case "capital":
+          if(pais?.capital){
+            pregunta = `¿Cuál es el país de la capital ${pais.capital[0]}?`
+            respuesta = pais.name.common;
+            puntos = 3;
+          }
+          break;
+
+        case "flag":
+          if(pais?.flags?.svg){
+            pregunta = `
+                        <p>¿Qué país esta representado por la siguiente bandera?</p>
+                        <img src="${pais.flags.svg}">
+                      `
+            respuesta = pais.name.common;
+            puntos = 5;
+          }
+          break;
+
+        case "borders":
+          if(pais?.borders){
+            pregunta = `¿¿Cuántos países limítrofes tiene ${pais.name.common}?`
+            respuesta = pais.borders.length;
+            puntos = 3;
+          }
+          break;
+          
+        default:
+        console.error("Tipo de pregunta inexistente");
+        
+        break;
+      }
+    }
+    setOpciones.add(respuesta);
+    console.log("pregunta cargada y respuesta cargada");
+//CARGAR OPCIONES
+    while (setOpciones.size<=cantOpciones) {
+      const pais = this.recuperarPaisAleatorio();
+      setOpciones.add(pais.name.common);
+    }
+
+  }
+  
+  static recuperarPaisAleatorio(){
+    const paises = this.getListaPaises();
+    const random = Math.floor(Math.random() * paises.length); //Numero aleatorio
+    return paises[random];
+  }
+  
+  static getListaPaises() {
+    return Data.getPaises();
   }
 }
+
 
 class Jugador {
   static crearJugador(nombre){
