@@ -1,4 +1,5 @@
 class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega listeners
+  //Recupera los botones, maneja vistas importantes y agrega listeners
   static init() {
     //Inicializa elementos vistas importantes
     this.inicio = document.querySelector(".inicio");
@@ -55,8 +56,8 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
     });
   }
 }
-//Clase para recuperar datos del servidor y archivos
-class Data {      //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
+//Clase para recuperar datos del servidor
+class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
   static listaPaises = [];
   static ranking = [];
 
@@ -477,18 +478,18 @@ class Data {      //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR S
 
 class Juego {     //FALTA CARGAR RANKING
   static jugador;
-  static listaPreguntas;
+  static #listaPreguntas;
   static ranking;
-  static preguntaActual = 0;
+  static #preguntaActual = 0;
   static #tiposPreguntas = ["capital", "flag", "borders"];
 
   static iniciarJuego(cantPreguntas, nombreJugador) {
     this.jugador = new Jugador(nombreJugador);
-    this.listaPreguntas = this.#cargarPreguntas(cantPreguntas);
+    this.#listaPreguntas = this.#cargarPreguntas(cantPreguntas);
     this.ranking = []; //Lista de estadisticas de los jugadores
 
     //Muestro pregunta
-    this.mostrarPregunta(this.listaPreguntas[this.preguntaActual]);
+    this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
   }
   //CARGO PREGUNTAS
   static #cargarPreguntas(numPreguntas) {
@@ -509,7 +510,7 @@ class Juego {     //FALTA CARGAR RANKING
   }
 
   //MUESTRO LA PREGUNTA
-  static mostrarPregunta(preg) {
+  static #mostrarPregunta(preg) {
     const contenedorPregunta = document.getElementById("pregunta");
     const contenedorOpciones = document.getElementById("opciones");
     contenedorPregunta.textContent = "";
@@ -527,10 +528,40 @@ class Juego {     //FALTA CARGAR RANKING
       const btnOpcion = document.createElement("button");
       btnOpcion.textContent = op;
       btnOpcion.value = op;
-      btnOpcion.addEventListener("click", () => {escucharRespuesta(op)});
+      btnOpcion.addEventListener("click", () => {
+        Cronometro.parar;
+        this.#escucharRespuesta(op)});
       fragmOpciones.appendChild(btnOpcion);
     });
     contenedorOpciones.appendChild(fragmOpciones);
+    Cronometro.reiniciar();
+    Cronometro.iniciar();
+  }
+
+  static #escucharRespuesta(opcion) {
+    const tiempo = Cronometro.getTiempo();   //cargo el tiempo del cronometro
+    const pregunta = this.#listaPreguntas[this.#preguntaActual];
+    const respuesta = pregunta.getRespuesta();
+
+    console.log(this.jugador);
+    if (opcion === respuesta) {   //Comparo si la respuesta es correcta
+      alert("Correcto");
+      this.jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo);   //registro la respuesta en el jugador
+    } else {
+      alert(`Incorrecta, la respuesta era: ${respuesta}`);
+      
+      this.jugador.setTiempos(tiempo);
+    }
+    
+    console.log(this.jugador);
+    this.#preguntaActual++;   //Pasa a la siguiente pregunta
+
+    if (this.#preguntaActual < this.#listaPreguntas.length) {     //Controlo si quedan preguntas
+      this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
+    } else {
+      console.log("fin del juego");
+      endGame();
+    }
   }
 }
 
@@ -574,10 +605,12 @@ class Pregunta {
 
         case "borders":
           if (pais?.borders) {
-            this.#pregunta = `¿Cuántos países limítrofes tiene ${pais.name}?`;
             this.#respuesta = pais.borders.length;
-            this.#puntos = 3;
+          }else{
+            this.#respuesta = 0;            
           }
+          this.#pregunta = `¿Cuántos países limítrofes tiene ${pais.name}?`;
+          this.#puntos = 3;
           break;
 
         default:
@@ -592,7 +625,15 @@ class Pregunta {
     this.#setOpciones.add(this.#respuesta);
     while (this.#setOpciones.size < cantOpciones) {
       const pais = Data.paisAleatorio();
-      this.#setOpciones.add(pais.name);
+      if(this.tipo==="borders"){    //si es una pregunta de tipo limitrofe
+        if(pais?.borders){      //Si tiene paises limitrofes
+          this.#setOpciones.add(pais.borders.length);
+        }else{
+          this.#setOpciones.add(0);
+        }
+      }else{
+        this.#setOpciones.add(pais.name);
+      }
     }
   }
 
@@ -618,18 +659,62 @@ class Pregunta {
 }
 
 class Jugador {
-  puntaje;
-  correctas;
-  tiemposRegistrados;
+  #puntaje;
+  #correctas;
+  #tiempos;
 
   constructor(nombre) {
     this.nombre = nombre;
-    this.puntaje = 0;
-    this.correctas = 0;
-    this.tiemposRegistrados = [];
+    this.#puntaje = 0;
+    this.#correctas = 0;
+    this.#tiempos = [];
+  }
+
+  getPuntaje () { return this.#puntaje };
+
+  getCorrectas () { return this.#correctas };
+
+  getTiempos () {return this.#tiempos};
+
+  setTiempos (tiempo) { this.#tiempos.push(tiempo)};
+
+  respuestaCorrecta (puntos, tiempo) {
+    this.#puntaje += puntos;
+    this.#tiempos.push(tiempo);
+    this.#correctas++;
   }
 }
 
-class Estadistica{
+class Estadistica {}
+
+class Cronometro {
+  static tiempo = 0;
+  static temporizador;
+
+  static getTiempo(){
+    return this.tiempo;
+  }
+
+  static iniciar(){
+    this.temporizador = setInterval(() => { this.tiempo++; }, 1000);
+  }
+
+  static parar(){
+    clearInterval(this.temporizador);   //Detiene el setInterval
+  }
+
+  static reiniciar(){
+    this.parar();
+    this.tiempo = 0;
+  }
+
+  static formatearHora(segundos){
+    const min = Math.floor(segundos / 60);
+    const seg = segundos%60;
+
+    //PADSTART: asegura que una cadena tenga una longitud minima, si falta la rellena con caracter adicional "0"
+    return `${min.toString().padStart(2,"0")}:${seg.toString().padStart(2,"0")}`;
+  }
 }
+
 Interfaz.init();
