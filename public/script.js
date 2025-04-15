@@ -1,6 +1,6 @@
 class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega listeners
-  //Recupera los botones, maneja vistas importantes y agrega listeners
-  static init() {
+
+  static init(preguntas) {
     //Inicializa elementos vistas importantes
     this.inicio = document.querySelector(".inicio");
     this.ranking = document.querySelector(".ranking");
@@ -19,7 +19,8 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
       }
 
       await Data.cargarPaises();
-      Juego.iniciarJuego(10, txtNombre);
+      Juego.iniciarJuego(preguntas, txtNombre);
+      this.nombre.value = "";
       this.viewPlay();
     });
     this.btnRanking.addEventListener("click", () => this.viewRanking());
@@ -54,6 +55,16 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
     elements.forEach((element) => {
       element.classList.toggle("ocultar");
     });
+  }
+
+  static crearBotonInicio(ubicacion, claseOrigen) {
+    const btnInicio = document.createElement("button");
+    btnInicio.textContent = "Inicio";
+    btnInicio.value = "inicio";
+    btnInicio.addEventListener("click", () => {
+      this.toggleView(this.inicio, claseOrigen);
+    });
+    ubicacion.appendChild(btnInicio);
   }
 }
 //Clase para recuperar datos del servidor
@@ -476,17 +487,23 @@ class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR
     */
 }
 
-class Juego {     //FALTA CARGAR RANKING
+class Juego {
+  //FALTA CARGAR RANKING
   static jugador;
   static #listaPreguntas;
   static ranking;
   static #preguntaActual = 0;
   static #tiposPreguntas = ["capital", "flag", "borders"];
 
+
+  
   static iniciarJuego(cantPreguntas, nombreJugador) {
     this.jugador = new Jugador(nombreJugador);
     this.#listaPreguntas = this.#cargarPreguntas(cantPreguntas);
     this.ranking = []; //Lista de estadisticas de los jugadores
+
+    
+
 
     //Muestro pregunta
     this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
@@ -499,7 +516,13 @@ class Juego {     //FALTA CARGAR RANKING
       let indice = index % this.#tiposPreguntas.length; //asigno el indice siguiente de forma ciclica entre 0 y 3
       const nuevaPregunta = new Pregunta(this.#tiposPreguntas[indice]);
       //controlo que la pregunta no se encuentre en la lista de preguntas
-      if (preguntas.some((preg) => preg.tipo === nuevaPregunta.tipo && preg.getRespuesta() === nuevaPregunta.getRespuesta())) {
+      if (
+        preguntas.some(
+          (preg) =>
+            preg.tipo === nuevaPregunta.tipo &&
+            preg.getRespuesta() === nuevaPregunta.getRespuesta()
+        )
+      ) {
         index--;
       } else {
         preguntas.push(nuevaPregunta);
@@ -511,57 +534,94 @@ class Juego {     //FALTA CARGAR RANKING
 
   //MUESTRO LA PREGUNTA
   static #mostrarPregunta(preg) {
+    const contedorProgreso = document.getElementById("progreso");
     const contenedorPregunta = document.getElementById("pregunta");
     const contenedorOpciones = document.getElementById("opciones");
     contenedorPregunta.textContent = "";
     contenedorOpciones.textContent = "";
-    console.log(preg.getOpciones());    
+    contedorProgreso.textContent = "";
+    console.log(preg.getOpciones());
+
     
+    //Muestro progreso
+    const conteTiempo = document.createElement("p");
+    conteTiempo.id = "tiempo";
+    contedorProgreso.appendChild(conteTiempo);
+
+    const cronometro = new Cronometro((tiempo) => {
+      if (conteTiempo) {
+        conteTiempo.textContent = Cronometro.formatearHora(tiempo);
+      }
+    });
+    conteTiempo.textContent = Cronometro.formatearHora(cronometro.getTiempo());
+    let progreso = `${this.#preguntaActual + 1} / ${
+      this.#listaPreguntas.length
+    }`;
+    const contePregActual = document.createElement("p");
+    contePregActual.textContent = progreso;
+    contedorProgreso.appendChild(contePregActual);
+
     //Muestro pregunta
     contenedorPregunta.textContent = preg.getPregunta();
 
     //Muestro opciones como botones
     const fragmOpciones = document.createDocumentFragment();
     const opciones = Data.mezclar(preg.getOpciones());
-      
+
     opciones.forEach((op) => {
       const btnOpcion = document.createElement("button");
       btnOpcion.textContent = op;
       btnOpcion.value = op;
       btnOpcion.addEventListener("click", () => {
-        Cronometro.parar;
-        this.#escucharRespuesta(op)});
+        cronometro.parar();
+        const tiempo = cronometro.getTiempo();
+        this.#escucharRespuesta(op, tiempo);
+      });
       fragmOpciones.appendChild(btnOpcion);
     });
     contenedorOpciones.appendChild(fragmOpciones);
-    Cronometro.reiniciar();
-    Cronometro.iniciar();
+    cronometro.reiniciar()
+    cronometro.iniciar();
   }
 
-  static #escucharRespuesta(opcion) {
-    const tiempo = Cronometro.getTiempo();   //cargo el tiempo del cronometro
+  static #escucharRespuesta(opcion, tiempo) {
+
     const pregunta = this.#listaPreguntas[this.#preguntaActual];
     const respuesta = pregunta.getRespuesta();
 
     console.log(this.jugador);
-    if (opcion === respuesta) {   //Comparo si la respuesta es correcta
+    if (opcion === respuesta) {
+      //Comparo si la respuesta es correcta
       alert("Correcto");
-      this.jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo);   //registro la respuesta en el jugador
+      this.jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo); //registro la respuesta en el jugador
     } else {
       alert(`Incorrecta, la respuesta era: ${respuesta}`);
-      
+
       this.jugador.setTiempos(tiempo);
     }
-    
-    console.log(this.jugador);
-    this.#preguntaActual++;   //Pasa a la siguiente pregunta
 
-    if (this.#preguntaActual < this.#listaPreguntas.length) {     //Controlo si quedan preguntas
+    console.log(this.jugador);
+    this.#preguntaActual++; //Pasa a la siguiente pregunta
+
+    if (this.#preguntaActual < this.#listaPreguntas.length) {
+      //Controlo si quedan preguntas
       this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
     } else {
       console.log("fin del juego");
-      endGame();
+      this.endGame();
     }
+  }
+
+  static endGame() {
+    const contenedorJuego = document.querySelector(".juego");
+    const contedorProgreso = document.getElementById("progreso");
+    const contenedorOpciones = document.getElementById("opciones");
+    contenedorOpciones.textContent = ""; // Limpiar opciones
+    contedorProgreso.textContent = "";
+
+    this.jugador.mostrarEstadistica();
+    Interfaz.crearBotonInicio(contenedorOpciones, contenedorJuego);
+    this.#preguntaActual = 0;
   }
 }
 
@@ -606,8 +666,8 @@ class Pregunta {
         case "borders":
           if (pais?.borders) {
             this.#respuesta = pais.borders.length;
-          }else{
-            this.#respuesta = 0;            
+          } else {
+            this.#respuesta = 0;
           }
           this.#pregunta = `¿Cuántos países limítrofes tiene ${pais.name}?`;
           this.#puntos = 3;
@@ -619,19 +679,21 @@ class Pregunta {
       }
     }
   }
-  
+
   #cargarOpciones(cantOpciones = Pregunta.cantOpciones) {
     this.#setOpciones.clear();
     this.#setOpciones.add(this.#respuesta);
     while (this.#setOpciones.size < cantOpciones) {
       const pais = Data.paisAleatorio();
-      if(this.tipo==="borders"){    //si es una pregunta de tipo limitrofe
-        if(pais?.borders){      //Si tiene paises limitrofes
+      if (this.tipo === "borders") {
+        //si es una pregunta de tipo limitrofe
+        if (pais?.borders) {
+          //Si tiene paises limitrofes
           this.#setOpciones.add(pais.borders.length);
-        }else{
+        } else {
           this.#setOpciones.add(0);
         }
-      }else{
+      } else {
         this.#setOpciones.add(pais.name);
       }
     }
@@ -670,51 +732,104 @@ class Jugador {
     this.#tiempos = [];
   }
 
-  getPuntaje () { return this.#puntaje };
+  getPuntaje() {
+    return this.#puntaje;
+  }
 
-  getCorrectas () { return this.#correctas };
+  getCorrectas() {
+    return this.#correctas;
+  }
 
-  getTiempos () {return this.#tiempos};
+  getTiempos() {
+    return this.#tiempos;
+  }
 
-  setTiempos (tiempo) { this.#tiempos.push(tiempo)};
+  setTiempos(tiempo) {
+    this.#tiempos.push(tiempo);
+  }
 
-  respuestaCorrecta (puntos, tiempo) {
+  respuestaCorrecta(puntos, tiempo) {
     this.#puntaje += puntos;
     this.#tiempos.push(tiempo);
     this.#correctas++;
   }
-}
 
-class Estadistica {}
+  mostrarEstadistica() {
+    const estadistica = document.getElementById("pregunta");
+    const cantPreguntas = this.#tiempos.length;
+
+    estadistica.innerHTML = `Juego terminado.<br>
+                              Puntuación final: ${this.#puntaje}<br>
+                              Preguntas correctas: ${this.#correctas}<br>
+                              Preguntas Incorrectas: ${
+                                cantPreguntas - this.#correctas
+                              }<br>
+                              Tiempo de la partida: ${Cronometro.formatearHora(
+                                Cronometro.sumarTiempos(this.#tiempos)
+                              )}<br>
+                              Tiempo promedio: ${Cronometro.formatearHora(
+                                Cronometro.calcularPromedio(this.#tiempos)
+                              )}`;
+  }
+}
 
 class Cronometro {
-  static tiempo = 0;
-  static temporizador;
+  #tiempo;
+  #temporizador;
+  #callback;
 
-  static getTiempo(){
-    return this.tiempo;
+  constructor(callback) {
+    this.#tiempo = 0;
+    this.#temporizador = null;
+    this.#callback = callback;
   }
 
-  static iniciar(){
-    this.temporizador = setInterval(() => { this.tiempo++; }, 1000);
+  getTiempo() {
+    return this.#tiempo;
   }
 
-  static parar(){
-    clearInterval(this.temporizador);   //Detiene el setInterval
+  iniciar() {
+    if (!this.#temporizador) {
+      this.#temporizador = setInterval(() => {
+        this.#tiempo++;
+        if (this.#callback) {
+          this.#callback(this.#tiempo);
+        }
+      }, 10);
+    }
   }
 
-  static reiniciar(){
+  parar() {
+    if (this.#temporizador) {
+      clearInterval(this.#temporizador);
+      this.#temporizador = null;
+    }
+  }
+
+  reiniciar() {
     this.parar();
-    this.tiempo = 0;
+    this.#tiempo = 0;
   }
 
-  static formatearHora(segundos){
-    const min = Math.floor(segundos / 60);
-    const seg = segundos%60;
+  static formatearHora(centesimas) {
+    const min = Math.floor(centesimas / 6000); // 6000 centésimas = 1 minuto
+    const seg = Math.floor((centesimas % 6000) / 100); // 100 centésimas = 1 segundo
+    const cent = centesimas % 100; // Centésimas restantes
+    
+    return `${min.toString().padStart(2, "0")}:${seg
+      .toString()
+      .padStart(2, "0")}.${cent.toString().padStart(2, "0")}`;
+  }
 
-    //PADSTART: asegura que una cadena tenga una longitud minima, si falta la rellena con caracter adicional "0"
-    return `${min.toString().padStart(2,"0")}:${seg.toString().padStart(2,"0")}`;
+  static sumarTiempos(lista) {
+    return lista.reduce((resul, t) => resul + t, 0);
+  }
+
+  static calcularPromedio(lista) {
+    const tiempoTotal = this.sumarTiempos(lista);
+    const cantTiempos = lista.length;
+    return cantTiempos > 0 ? tiempoTotal / cantTiempos : 0;
   }
 }
 
-Interfaz.init();
+Interfaz.init(3);
