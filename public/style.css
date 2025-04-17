@@ -5,7 +5,17 @@
 }
 
 body {
-  background: rgb(25 68 74);
+  background: rgb(30, 174, 112);
+}
+
+main {
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  width: 100%;
 }
 
 h1{
@@ -18,46 +28,39 @@ h1{
   -webkit-text-stroke: 1px rgba(255, 0, 0, 0.452);
 }
 
-h2{
-  font-family: "Titan One", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+label {
+  font-size: 1.5rem;
+  color: #ff7c7c;
 }
 
 input {
   border: 2px solid #ffffff;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px ;
   font-size: 1rem;
   color: #333333;
-
+  text-align: center;
 }
 
-input[type="button"] {
+
+button{
   background-color: #ffffff;
   color: #3fa572;
+  border: 2px solid #ffffff;
+  width: 10rem;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-input[type="button"]:hover {
+button:hover{
   background-color: #34a469;
   color: #ffffff;
 }
-
-
-main {
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100%;
-}
-
-.inicio{
+.inicio, .juego, .ranking{
   background-color: rgb(50, 255, 234);
   box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
   display: flex;
@@ -65,78 +68,79 @@ main {
   width: 80%;
   max-width: 600px;
   align-items: center;
-  gap: 1rem;
   padding:  20px;
   border-radius: 20px;
+  gap: 1rem;
 }
 
-.registro{
-  display: contents;
-  gap: 10px;
-}
-
-.registro input{
-    text-align: center;
-}
-
-.opciones{
-  cursor: pointer;
+.registro{  
   display: flex;
-  width: 100%;
-  padding: 0 20px;
-  gap: 15px;
-}
-
-.opciones input{
-  width: 50%;
+  flex-direction: column;
+  align-items: center;
 }
 
 .completar{
   accent-color: red;
 }
-/*---------------------------------*/
-.ranking{
-  background-color: rgb(123, 123, 255);
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+
+.opciones{
   display: flex;
-  flex-direction: column;
-  width: 80%;
-  max-width: 600px;
-  max-height: 200px;
   align-items: center;
   gap: 1rem;
-  padding:  20px;
-  border-radius: 20px;
+  margin-top: 20px;
 }
-
-.tabla{
+/*---------------  JUGAR  ------------------*/
+.juego{
+padding: 20px 0px;
+}
+.progreso {
+  background-color: rgba(255, 255, 255, 0.616);
+  display: flex;
+  flex-direction: row-reverse;
   width: 100%;
-  overflow: auto;
+  justify-content: space-around;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-table{
-  border-radius: 30px;
-  width: 100%;
-}
-
-table, th, td{
-  border-collapse: collapse;
+#pregunta{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  vertical-align: middle;
-  padding: 2px;
+  gap: 0.8rem;
+  font-size: 1.3rem;
 }
 
-thead, th{
-  position: sticky;
-  top: 0;
+.juego img {
+width: 170px;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;
 }
 
-tr:nth-child(odd) {
-  background-color: rgb(239, 255, 67);
+#opciones{
+  background-color: rgba(0, 0, 0, 0.153);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  max-width: 545px;
+  padding: 20px;
 }
-tr:nth-child(even) {
-  background-color:  rgb(255, 211, 67);
+
+.fin{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: rgb(229, 101, 101);
+
 }
+/*-------------RANKING--------------*/
+
 /*---------------------------------*/
 .ocultar{
   display: none;

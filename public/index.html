@@ -13,25 +13,24 @@
 <body>
   <main class="principal">
     <h1>TRIVIA MUNDI</h1>
-    <div class="inicio">
-      <div class="registro">
-        <label for="nombre">Usuario: </label>
+    <div class="inicio ">
+      <div class="registro" id="registro">
+        <label for="nombre">Usuario</label>
         <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre">
       </div>
+
       <div class="opciones">
-        <input id="btnJugar" type="button" value="JUGAR">
-        <input id="btnRanking" type="button" value="RANKING">
+        <button id="btnJugar">JUGAR</button>
+        <button id="btnRanking">RANKING</button>
       </div>
     </div>
     <div class="juego ocultar">
-      <p id="progreso"></p>
+      <div class="progreso"></div>
       <div id="pregunta"></div>
       <div id="opciones"></div>
     </div>
     <div class="ranking ocultar">
-      <h1>MEJORES PUNTAJES</h2>
-      <div class="vistaRanking"></div>
-      <input id="btnInicio" type="button" value="Inicio">
+      <button id="btnInicio">INICIO</button>
     </div>
   </main>
 </body>

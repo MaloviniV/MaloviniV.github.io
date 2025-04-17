@@ -68,164 +68,23 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
   }
 }
 //Clase para recuperar datos del servidor
-class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
+class Data {
+  //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
   static listaPaises = [];
   static ranking = [];
-
+  static URL_API = "/api/all";
+  static URL_RANKING = "/api/ranking";
+  
   static async cargarPaises() {
-    this.listaPaises = [
-      {
-        name: "Argentina",
-        flags: "🇦🇷",
-        borders: ["Chile", "Bolivia", "Paraguay", "Uruguay", "Brasil"],
-        capital: "Buenos Aires",
-      },
-      {
-        name: "Brasil",
-        flags: "🇧🇷",
-        borders: [
-          "Argentina",
-          "Uruguay",
-          "Paraguay",
-          "Bolivia",
-          "Perú",
-          "Colombia",
-          "Venezuela",
-        ],
-        capital: "Brasilia",
-      },
-      {
-        name: "Chile",
-        flags: "🇨🇱",
-        borders: ["Argentina", "Bolivia", "Perú"],
-        capital: "Santiago",
-      },
-      {
-        name: "Uruguay",
-        flags: "🇺🇾",
-        borders: ["Argentina", "Brasil"],
-        capital: "Montevideo",
-      },
-      {
-        name: "Perú",
-        flags: "🇵🇪",
-        borders: ["Brasil", "Bolivia", "Chile", "Colombia", "Ecuador"],
-        capital: "Lima",
-      },
-      {
-        name: "Colombia",
-        flags: "🇨🇴",
-        borders: ["Brasil", "Perú", "Ecuador", "Panamá", "Venezuela"],
-        capital: "Bogotá",
-      },
-      {
-        name: "Venezuela",
-        flags: "🇻🇪",
-        borders: ["Brasil", "Colombia", "Guyana"],
-        capital: "Caracas",
-      },
-      {
-        name: "Bolivia",
-        flags: "🇧🇴",
-        borders: ["Argentina", "Brasil", "Chile", "Paraguay", "Perú"],
-        capital: "Sucre",
-      },
-      {
-        name: "Paraguay",
-        flags: "🇵🇾",
-        borders: ["Argentina", "Bolivia", "Brasil"],
-        capital: "Asunción",
-      },
-      {
-        name: "Ecuador",
-        flags: "🇪🇨",
-        borders: ["Colombia", "Perú"],
-        capital: "Quito",
-      },
-      {
-        name: "México",
-        flags: "🇲🇽",
-        borders: ["Estados Unidos", "Guatemala", "Belice"],
-        capital: "Ciudad de México",
-      },
-      {
-        name: "Estados Unidos",
-        flags: "🇺🇸",
-        borders: ["Canadá", "México"],
-        capital: "Washington D.C.",
-      },
-      {
-        name: "Canadá",
-        flags: "🇨🇦",
-        borders: ["Estados Unidos"],
-        capital: "Ottawa",
-      },
-      {
-        name: "España",
-        flags: "🇪🇸",
-        borders: ["Francia", "Portugal", "Andorra"],
-        capital: "Madrid",
-      },
-      {
-        name: "Francia",
-        flags: "🇫🇷",
-        borders: [
-          "España",
-          "Bélgica",
-          "Luxemburgo",
-          "Alemania",
-          "Suiza",
-          "Italia",
-        ],
-        capital: "París",
-      },
-      {
-        name: "Alemania",
-        flags: "🇩🇪",
-        borders: [
-          "Dinamarca",
-          "Polonia",
-          "República Checa",
-          "Austria",
-          "Suiza",
-          "Francia",
-        ],
-        capital: "Berlín",
-      },
-      {
-        name: "Italia",
-        flags: "🇮🇹",
-        borders: ["Francia", "Suiza", "Austria", "Eslovenia"],
-        capital: "Roma",
-      },
-      {
-        name: "Rusia",
-        flags: "🇷🇺",
-        borders: [
-          "Noruega",
-          "Finlandia",
-          "Estonia",
-          "Letonia",
-          "Lituania",
-          "Polonia",
-          "China",
-        ],
-        capital: "Moscú",
-      },
-      {
-        name: "China",
-        flags: "🇨🇳",
-        borders: ["Rusia", "Mongolia", "Corea del Norte", "Vietnam", "India"],
-        capital: "Pekín",
-      },
-      {
-        name: "India",
-        flags: "🇮🇳",
-        borders: ["Pakistán", "China", "Nepal", "Bután", "Bangladesh"],
-        capital: "Nueva Delhi",
-      },
-    ];
+    try {
+      const answer = await fetch(this.URL_API);
+      const data = await answer.json();
+      this.listaPaises = data;
+    } catch (error) {
+      console.error("Error al cargar los datos:", error);
+    }
   }
+
 
   static async cargarRanking() {
     this.ranking = [
@@ -414,7 +273,9 @@ class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR
 
   static getListaPaises() {
     if (this.listaPaises.length === 0) {
-      throw new Error("No hay países disponibles. Asegúrate de cargar los datos primero.");
+      throw new Error(
+        "No hay países disponibles. Cargar los datos primero."
+      );
     }
     return this.listaPaises;
   }
@@ -428,25 +289,165 @@ class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR
     return paises[random];
   }
 
-  static mezclar(lista){    
-    return [...lista].sort(() => Math.random() - 0.5);   //Mezclo las opciones y devuelvo un nuevo array
-  };
+  static mezclar(lista) {
+    return [...lista].sort(() => Math.random() - 0.5); //Mezclo las opciones y devuelvo un nuevo array
+  }
 
-  /*
-  static URL_API = "/api/all";
-  static URL_RANKING = "/api/ranking"
-  static listaPaises = [];
-  static listaRanking = []
-  
-  static async cargarDatos() {
-    try {
-      const answer = await fetch(this.URL_API);
-      const data = await answer.json();
-      console.log(data);
-      this.listaPaises = data;
-    } catch (error) {
-      console.error("Error al cargar los datos:", error);
-    }
+
+/*
+  static async cargarPaises() {
+    this.listaPaises = [
+      {
+        name: "Argentina",
+        flags: "🇦🇷",
+        borders: ["Chile", "Bolivia", "Paraguay", "Uruguay", "Brasil"],
+        capital: "Buenos Aires",
+      },
+      {
+        name: "Brasil",
+        flags: "🇧🇷",
+        borders: [
+          "Argentina",
+          "Uruguay",
+          "Paraguay",
+          "Bolivia",
+          "Perú",
+          "Colombia",
+          "Venezuela",
+        ],
+        capital: "Brasilia",
+      },
+      {
+        name: "Chile",
+        flags: "🇨🇱",
+        borders: ["Argentina", "Bolivia", "Perú"],
+        capital: "Santiago",
+      },
+      {
+        name: "Uruguay",
+        flags: "🇺🇾",
+        borders: ["Argentina", "Brasil"],
+        capital: "Montevideo",
+      },
+      {
+        name: "Perú",
+        flags: "🇵🇪",
+        borders: ["Brasil", "Bolivia", "Chile", "Colombia", "Ecuador"],
+        capital: "Lima",
+      },
+      {
+        name: "Colombia",
+        flags: "🇨🇴",
+        borders: ["Brasil", "Perú", "Ecuador", "Panamá", "Venezuela"],
+        capital: "Bogotá",
+      },
+      {
+        name: "Venezuela",
+        flags: "🇻🇪",
+        borders: ["Brasil", "Colombia", "Guyana"],
+        capital: "Caracas",
+      },
+      {
+        name: "Bolivia",
+        flags: "🇧🇴",
+        borders: ["Argentina", "Brasil", "Chile", "Paraguay", "Perú"],
+        capital: "Sucre",
+      },
+      {
+        name: "Paraguay",
+        flags: "🇵🇾",
+        borders: ["Argentina", "Bolivia", "Brasil"],
+        capital: "Asunción",
+      },
+      {
+        name: "Ecuador",
+        flags: "🇪🇨",
+        borders: ["Colombia", "Perú"],
+        capital: "Quito",
+      },
+      {
+        name: "México",
+        flags: "🇲🇽",
+        borders: ["Estados Unidos", "Guatemala", "Belice"],
+        capital: "Ciudad de México",
+      },
+      {
+        name: "Estados Unidos",
+        flags: "🇺🇸",
+        borders: ["Canadá", "México"],
+        capital: "Washington D.C.",
+      },
+      {
+        name: "Canadá",
+        flags: "🇨🇦",
+        borders: ["Estados Unidos"],
+        capital: "Ottawa",
+      },
+      {
+        name: "España",
+        flags: "🇪🇸",
+        borders: ["Francia", "Portugal", "Andorra"],
+        capital: "Madrid",
+      },
+      {
+        name: "Francia",
+        flags: "🇫🇷",
+        borders: [
+          "España",
+          "Bélgica",
+          "Luxemburgo",
+          "Alemania",
+          "Suiza",
+          "Italia",
+        ],
+        capital: "París",
+      },
+      {
+        name: "Alemania",
+        flags: "🇩🇪",
+        borders: [
+          "Dinamarca",
+          "Polonia",
+          "República Checa",
+          "Austria",
+          "Suiza",
+          "Francia",
+        ],
+        capital: "Berlín",
+      },
+      {
+        name: "Italia",
+        flags: "🇮🇹",
+        borders: ["Francia", "Suiza", "Austria", "Eslovenia"],
+        capital: "Roma",
+      },
+      {
+        name: "Rusia",
+        flags: "🇷🇺",
+        borders: [
+          "Noruega",
+          "Finlandia",
+          "Estonia",
+          "Letonia",
+          "Lituania",
+          "Polonia",
+          "China",
+        ],
+        capital: "Moscú",
+      },
+      {
+        name: "China",
+        flags: "🇨🇳",
+        borders: ["Rusia", "Mongolia", "Corea del Norte", "Vietnam", "India"],
+        capital: "Pekín",
+      },
+      {
+        name: "India",
+        flags: "🇮🇳",
+        borders: ["Pakistán", "China", "Nepal", "Bután", "Bangladesh"],
+        capital: "Nueva Delhi",
+      },
+    ];
   }
 
   static getPaises() {
@@ -484,7 +485,8 @@ class Data {        //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR
       console.error("Error al enviar el PUT al servidor:", error);      
     }
   }
-    */
+  */  
+
 }
 
 class Juego {
@@ -534,17 +536,15 @@ class Juego {
 
   //MUESTRO LA PREGUNTA
   static #mostrarPregunta(preg) {
-    const contedorProgreso = document.getElementById("progreso");
+    const contedorProgreso = document.querySelector(".progreso");
     const contenedorPregunta = document.getElementById("pregunta");
     const contenedorOpciones = document.getElementById("opciones");
     contenedorPregunta.textContent = "";
     contenedorOpciones.textContent = "";
     contedorProgreso.textContent = "";
-    console.log(preg.getOpciones());
-
     
     //Muestro progreso
-    const conteTiempo = document.createElement("p");
+    const conteTiempo = document.createElement("span");
     conteTiempo.id = "tiempo";
     contedorProgreso.appendChild(conteTiempo);
 
@@ -553,16 +553,16 @@ class Juego {
         conteTiempo.textContent = Cronometro.formatearHora(tiempo);
       }
     });
-    conteTiempo.textContent = Cronometro.formatearHora(cronometro.getTiempo());
+   // conteTiempo.textContent = Cronometro.formatearHora(cronometro.getTiempo());
     let progreso = `${this.#preguntaActual + 1} / ${
       this.#listaPreguntas.length
     }`;
-    const contePregActual = document.createElement("p");
+    const contePregActual = document.createElement("span");
     contePregActual.textContent = progreso;
     contedorProgreso.appendChild(contePregActual);
 
     //Muestro pregunta
-    contenedorPregunta.textContent = preg.getPregunta();
+    contenedorPregunta.innerHTML = preg.getPregunta();
 
     //Muestro opciones como botones
     const fragmOpciones = document.createDocumentFragment();
@@ -589,7 +589,6 @@ class Juego {
     const pregunta = this.#listaPreguntas[this.#preguntaActual];
     const respuesta = pregunta.getRespuesta();
 
-    console.log(this.jugador);
     if (opcion === respuesta) {
       //Comparo si la respuesta es correcta
       alert("Correcto");
@@ -600,7 +599,6 @@ class Juego {
       this.jugador.setTiempos(tiempo);
     }
 
-    console.log(this.jugador);
     this.#preguntaActual++; //Pasa a la siguiente pregunta
 
     if (this.#preguntaActual < this.#listaPreguntas.length) {
@@ -614,11 +612,13 @@ class Juego {
 
   static endGame() {
     const contenedorJuego = document.querySelector(".juego");
-    const contedorProgreso = document.getElementById("progreso");
+    const contedorProgreso = document.querySelector(".progreso");
     const contenedorOpciones = document.getElementById("opciones");
     contenedorOpciones.textContent = ""; // Limpiar opciones
     contedorProgreso.textContent = "";
 
+    contedorProgreso.innerHTML = `<span>¡¡Fin del juego!!</span><span>-- Estadisticas --</span>`;
+    contedorProgreso.classList.add("fin");
     this.jugador.mostrarEstadistica();
     Interfaz.crearBotonInicio(contenedorOpciones, contenedorJuego);
     this.#preguntaActual = 0;
@@ -645,20 +645,21 @@ class Pregunta {
   #crearPregunta() {
     while (!this.#pregunta) {
       let pais = Data.paisAleatorio();
+      
       switch (this.tipo) {
         case "capital":
           if (pais?.capital) {
-            this.#pregunta = `¿Cuál es el país de la capital ${pais.capital}?`;
-            this.#respuesta = pais.name;
+            this.#pregunta = `¿Cuál es el país de la capital ${pais.capital[0]}?`;
+            this.#respuesta = pais.name.common;
             this.#puntos = 3;
           }
           break;
 
         case "flag":
           if (pais?.flags) {
-            this.#pregunta = `<p>¿Qué país está representado por la siguiente bandera?</p><img src="${pais.flags}">
+            this.#pregunta = `<p>¿Qué país está representado por la siguiente bandera?</p><img src="${pais.flags.svg}">
             `;
-            this.#respuesta = pais.name;
+            this.#respuesta = pais.name.common;
             this.#puntos = 5;
           }
           break;
@@ -669,7 +670,7 @@ class Pregunta {
           } else {
             this.#respuesta = 0;
           }
-          this.#pregunta = `¿Cuántos países limítrofes tiene ${pais.name}?`;
+          this.#pregunta = `¿Cuántos países limítrofes tiene ${pais.name.common}?`;
           this.#puntos = 3;
           break;
 
@@ -694,7 +695,7 @@ class Pregunta {
           this.#setOpciones.add(0);
         }
       } else {
-        this.#setOpciones.add(pais.name);
+        this.#setOpciones.add(pais.name.common);
       }
     }
   }
@@ -758,8 +759,7 @@ class Jugador {
     const estadistica = document.getElementById("pregunta");
     const cantPreguntas = this.#tiempos.length;
 
-    estadistica.innerHTML = `Juego terminado.<br>
-                              Puntuación final: ${this.#puntaje}<br>
+    estadistica.innerHTML = `Puntuación final: ${this.#puntaje}<br>
                               Preguntas correctas: ${this.#correctas}<br>
                               Preguntas Incorrectas: ${
                                 cantPreguntas - this.#correctas
@@ -832,4 +832,4 @@ class Cronometro {
   }
 }
 
-Interfaz.init(3);
+Interfaz.init(2);
