@@ -5,17 +5,36 @@
 }
 
 body {
-  background: rgb(30, 174, 112);
+  /*background: rgb(30, 174, 112);*/
+  background-image: url("./fondo.jpg"), linear-gradient(#00000045);  /*imagen y capa*/
+  background-blend-mode: overlay;   /*Forma en la que se combinan*/
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 main {
-  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh;
+  height: 100vh;
   width: 100%;
+}
+
+.vista{
+  /*background-color: rgb(50, 255, 234);*/
+  background-color: rgba(255, 255, 255, 0.25);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 600px;
+  align-items: center;
+  padding:  40px;
+  border-radius: 20px;
+  gap: 1rem;
 }
 
 h1{
@@ -28,31 +47,29 @@ h1{
   -webkit-text-stroke: 1px rgba(255, 0, 0, 0.452);
 }
 
-label {
-  font-size: 1.5rem;
-  color: #ff7c7c;
+input, button {
+  height: 45px;
+  border-radius: 10px;
 }
 
 input {
   border: 2px solid #ffffff;
-  border-radius: 10px;
-  padding: 10px ;
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: #333333;
   text-align: center;
+  accent-color: transparent;
+  width: 15rem;
 }
 
-
 button{
-  background-color: #ffffff;
-  color: #3fa572;
+  background-color: #ff8400;
+  color: #ffffff;
   border: 2px solid #ffffff;
   width: 10rem;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  border-radius: 10px;
   padding: 10px;
 }
 
@@ -60,27 +77,11 @@ button:hover{
   background-color: #34a469;
   color: #ffffff;
 }
-.inicio, .juego, .ranking{
-  background-color: rgb(50, 255, 234);
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  max-width: 600px;
-  align-items: center;
-  padding:  20px;
-  border-radius: 20px;
-  gap: 1rem;
-}
 
 .registro{  
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.completar{
-  accent-color: red;
 }
 
 .opciones{
@@ -91,20 +92,32 @@ button:hover{
 }
 /*---------------  JUGAR  ------------------*/
 .juego{
-padding: 20px 0px;
+  overflow-x: hidden;
+  width: 90%;
+  height: auto;
+  padding: 0;
 }
-.progreso {
-  background-color: rgba(255, 255, 255, 0.616);
+
+#progreso {
+  background-color: #ff5050;
+  color: #ffffff;
+  width: 100%;
   display: flex;
   flex-direction: row-reverse;
-  width: 100%;
-  justify-content: space-around;
-  padding: 10px;
-  font-weight: bold;
-  font-size: 1.2rem;
+  justify-content: space-between;
+  padding: 10px 40px;
+  font-weight: bolder;
+  font-size: 1.8rem;
+  -webkit-text-stroke: .15px black; /* Contorno letra*/
+  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1px;
 }
 
 #pregunta{
+  background: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -114,30 +127,57 @@ padding: 20px 0px;
 }
 
 .juego img {
-width: 170px;
-box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;
+  height: 130px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;
 }
 
 #opciones{
-  background-color: rgba(0, 0, 0, 0.153);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  width: 100%;
-  max-width: 545px;
+  background-color: rgb(218, 255, 251);
+  border-radius: 20px;
+  display: grid; /* Activa el modo Grid */
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+  grid-template-rows: 1fr 1fr; /* Dos filas de igual tamaño */
+  gap: .8rem; /* Espaciado entre filas y columnas */
   padding: 20px;
+  margin: 0 20px 20px 20px;
 }
 
-.fin{
+.estadistica{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-  color: rgb(229, 101, 101);
+}
 
+h2.estadistica{
+  background-color: #ff5050;
+  color: #ffffff;
+  width: 100%;
+  font-size: 1.8rem;
+  margin: 0 10px;
+  padding: 5px;
+  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1px;
+}
+
+div.estadistica{
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .5rem;
+}
+
+span.label{
+  color: rgb(11, 0, 132);
+  font-weight: bold;
+}
+
+.juego > button{
+  margin-bottom: 20px;
 }
 /*-------------RANKING--------------*/
 
@@ -148,4 +188,5 @@ box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 8px;
 
 .error{
   color: red;
+  accent-color: red;
 }

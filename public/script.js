@@ -620,35 +620,37 @@ class Juego {
   }
 
 //Limpio la pantalla e inserto dinamicamente la interfaz endGame
-  static endGame() {
-    const estadisticas = this.#jugador.estadistica();    //Recupero las estadisticas del jugador
-    const contenedorJuego = document.querySelector(".juego");
-    contenedorJuego.textContent = "";
+static endGame() {
+  const estadisticas = this.#jugador.estadistica();    //Recupero las estadisticas del jugador
+  const contenedorJuego = document.querySelector(".juego");
+  contenedorJuego.textContent = "";
 
-    const fragmento = document.createDocumentFragment();
+  const fragmento = document.createDocumentFragment();
 //Cargo el titulo
-    const contTitulo = document.createElement("h2");
-    contTitulo.textContent = "Estadisticas";
-    fragmento.appendChild(contTitulo);
+  const contTitulo = document.createElement("h2");
+  contTitulo.className = "estadistica";
+  contTitulo.textContent = "Estadisticas";
+  fragmento.appendChild(contTitulo);
 
 //Cargo las estadisticas
-    const contEstadisticas = document.createElement("div");
-    contEstadisticas.innerHTML = `<span><span class="label">Puntuación final:</span> ${estadisticas.puntos}</span>
-                                  <span><span class="label">Preguntas correctas:</span> ${estadisticas.correctas}</span>
-                                  <span><span class="label">Preguntas Incorrectas:</span> ${estadisticas.incorrectas}</span>
-                                  <span><span class="label">Tiempo de la partida:</span> ${Cronometro.formatearHora(estadisticas.tiempoPartida)}</span>
-                                  <span><span class="label">Tiempo promedio:</span> ${Cronometro.formatearHora(estadisticas.tiempoPromedio)}</span>
-                                  `;
-    fragmento.appendChild(contEstadisticas);
+  const contEstadisticas = document.createElement("div");
+  contEstadisticas.className = "estadistica";
+  contEstadisticas.innerHTML = `<span><span class="label">Puntuación final:</span> ${estadisticas.puntos}</span>
+                                <span><span class="label">Preguntas correctas:</span> ${estadisticas.correctas}</span>
+                                <span><span class="label">Preguntas Incorrectas:</span> ${estadisticas.incorrectas}</span>
+                                <span><span class="label">Tiempo de la partida:</span> ${Cronometro.formatearHora(estadisticas.tiempoPartida)}</span>
+                                <span><span class="label">Tiempo promedio:</span> ${(estadisticas.tiempoPromedio / 100).toFixed(4)} seg</span>
+                                `;
+  fragmento.appendChild(contEstadisticas);
 //Cargo el boton para ir a inicio
-    fragmento.appendChild(Interfaz.crearBoton("inicio", ()=>{
-      Interfaz.cambiarVista(document.querySelector(".inicio"))
-    }));
+  fragmento.appendChild(Interfaz.crearBoton("INICIO", ()=>{
+    Interfaz.cambiarVista(document.querySelector(".inicio"))
+  }));
 
-    contenedorJuego.appendChild(fragmento);
+  contenedorJuego.appendChild(fragmento);
 
-    this.#preguntaActual = 0; //vuelvo la pregunta actual a 0
-  }
+  this.#preguntaActual = 0; //vuelvo la pregunta actual a 0
+}
 }
 
 //CREO LA PREGUNTA CON SUS ATRIBUTOS Y METODOS
