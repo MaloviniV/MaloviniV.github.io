@@ -1,14 +1,15 @@
-class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega listeners
+//CREO BOTONES, maneja vistas importantes y INICIALIZO LA APLICACION
+class Interfaz {      
 
   static init(preguntas) {
     //Inicializa elementos vistas importantes
-    this.inicio = document.querySelector(".inicio");
-    this.ranking = document.querySelector(".ranking");
-    this.juego = document.querySelector(".juego");
-    this.nombre = document.getElementById("nombre");
     this.btnJugar = document.getElementById("btnJugar");
     this.btnRanking = document.getElementById("btnRanking");
     this.btnInicio = document.getElementById("btnInicio");
+    this.nombre = document.getElementById("nombre");
+    this.inicio = document.querySelector(".inicio");
+    this.ranking = document.querySelector(".ranking");
+    this.juego = document.querySelector(".juego");
 
     this.btnJugar.addEventListener("click", async () => {
       const txtNombre = this.nombre.value.trim(); // Elimina los espacios en blanco al inicio y al final del nombre
@@ -21,25 +22,18 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
       await Data.cargarPaises();
       Juego.iniciarJuego(preguntas, txtNombre);
       this.nombre.value = "";
-      this.viewPlay();
+      this.cambiarVista(this.juego);
     });
-    this.btnRanking.addEventListener("click", () => this.viewRanking());
-    this.btnInicio.addEventListener("click", () => this.return());
+    this.btnRanking.addEventListener("click", () => this.cambiarVista(this.ranking));
+    this.btnInicio.addEventListener("click", () => this.cambiarVista(this.inicio));
   }
 
-  static viewPlay() {
-    //Muestra la vista para jugar
-    this.toggleView(this.inicio, this.juego);
-  }
+  static cambiarVista(vistaMostrar){
+    const vistas = document.querySelectorAll(".vista");
 
-  static viewRanking() {
-    //Muestra la vista ranking
-    this.toggleView(this.inicio, this.ranking);
-  }
+    vistas.forEach(vista=>vista.classList.add("ocultar"));
 
-  static return() {
-    //Maneja el boton volver
-    this.toggleView(this.ranking, this.inicio);
+    vistaMostrar.classList.remove("ocultar");
   }
 
   static highlightError(inputElement) {
@@ -50,24 +44,17 @@ class Interfaz {      //Recupera los botones, maneja vistas importantes y agrega
     }, 2000); // El resaltado desaparece después de 2 segundos
   }
 
-  static toggleView(...elements) {
-    // Toggle alterna la clase ocultar  (saca y pone la clase CSS "ocultar")
-    elements.forEach((element) => {
-      element.classList.toggle("ocultar");
-    });
-  }
-
-  static crearBotonInicio(ubicacion, claseOrigen) {
-    const btnInicio = document.createElement("button");
-    btnInicio.textContent = "Inicio";
-    btnInicio.value = "inicio";
-    btnInicio.addEventListener("click", () => {
-      this.toggleView(this.inicio, claseOrigen);
-    });
-    ubicacion.appendChild(btnInicio);
+//FUNCION PARA CREAR BOTONES
+  static crearBoton(valor, callbackListener) {
+    const boton = document.createElement("button");
+    boton.textContent = valor;
+    boton.value = valor;
+    boton.addEventListener("click", callbackListener);
+    return boton;
   }
 }
-//Clase para recuperar datos del servidor
+
+//RECUPERO DATOS DEL SERVIDOR (api paises, json ranking)
 class Data {
   //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
   static listaPaises = [];
@@ -489,28 +476,26 @@ class Data {
 
 }
 
+//MANEJO EL JUEGO
 class Juego {
   //FALTA CARGAR RANKING
-  static jugador;
+  static #jugador;
   static #listaPreguntas;
-  static ranking;
   static #preguntaActual = 0;
   static #tiposPreguntas = ["capital", "flag", "borders"];
+  static #cronometro;
 
 
-  
+//INSTANCIO LOS ELEMENTOS DEL JUEGO (jugador, preguntas, cronometro, interfaz)
   static iniciarJuego(cantPreguntas, nombreJugador) {
-    this.jugador = new Jugador(nombreJugador);
-    this.#listaPreguntas = this.#cargarPreguntas(cantPreguntas);
-    this.ranking = []; //Lista de estadisticas de los jugadores
-
+    this.#jugador = new Jugador(nombreJugador);    //Instancio un jugador
+    this.#listaPreguntas = this.#cargarPreguntas(cantPreguntas);      //Cargo todas las preguntas de la partida
+    this.#cronometro = new Cronometro();   //Instancio Cronometro
     
-
-
-    //Muestro pregunta
-    this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
+    this.#interfazJuego();
   }
-  //CARGO PREGUNTAS
+
+  //CARGO LA LISTA DE PREGUNTAS
   static #cargarPreguntas(numPreguntas) {
     const preguntas = [];
 
@@ -518,10 +503,7 @@ class Juego {
       let indice = index % this.#tiposPreguntas.length; //asigno el indice siguiente de forma ciclica entre 0 y 3
       const nuevaPregunta = new Pregunta(this.#tiposPreguntas[indice]);
       //controlo que la pregunta no se encuentre en la lista de preguntas
-      if (
-        preguntas.some(
-          (preg) =>
-            preg.tipo === nuevaPregunta.tipo &&
+      if (preguntas.some((preg) => preg.tipo === nuevaPregunta.tipo &&
             preg.getRespuesta() === nuevaPregunta.getRespuesta()
         )
       ) {
@@ -534,56 +516,83 @@ class Juego {
     return preguntas;
   }
 
-  //MUESTRO LA PREGUNTA
-  static #mostrarPregunta(preg) {
-    const contedorProgreso = document.querySelector(".progreso");
-    const contenedorPregunta = document.getElementById("pregunta");
-    const contenedorOpciones = document.getElementById("opciones");
-    contenedorPregunta.textContent = "";
-    contenedorOpciones.textContent = "";
-    contedorProgreso.textContent = "";
+//Cargo los contenedores al DOM
+  static #interfazJuego(){
+    const contenedorJuego = document.querySelector(".juego");
+    contenedorJuego.textContent = "";
+//Creo un fragmento temporal para hacer la carga al DOM mas eficiente
+    const fragmento = document.createDocumentFragment();
+//Cargo el progreso al fragmento temporal
+    fragmento.appendChild(this.#contenedorProgreso());    
+//Cargo la pregunta al fragmento temporal
+    fragmento.appendChild(this.#contenedorPregunta(this.#listaPreguntas[this.#preguntaActual]));
+//Cargo las opciones al fragmento temporal
+    fragmento.appendChild(this.#contenedorOpciones(this.#listaPreguntas[this.#preguntaActual]));
+//Cargo todo al DOM
+    contenedorJuego.appendChild(fragmento);
     
-    //Muestro progreso
-    const conteTiempo = document.createElement("span");
-    conteTiempo.id = "tiempo";
-    contedorProgreso.appendChild(conteTiempo);
+    this.#cronometro.reiniciar();
+    this.#cronometro.iniciar();    
+  }
 
-    const cronometro = new Cronometro((tiempo) => {
-      if (conteTiempo) {
-        conteTiempo.textContent = Cronometro.formatearHora(tiempo);
-      }
-    });
-   // conteTiempo.textContent = Cronometro.formatearHora(cronometro.getTiempo());
-    let progreso = `${this.#preguntaActual + 1} / ${
-      this.#listaPreguntas.length
-    }`;
+//Retorno un contenedor con el progreso (tiempo y indicador)
+  static #contenedorProgreso(){
+
+    const contedorProgreso = document.createElement("div");
+    contedorProgreso.id = "progreso";
+
+    /*------Indicador------*/
+    //Indico por cual pregunta vamos
     const contePregActual = document.createElement("span");
-    contePregActual.textContent = progreso;
+    contePregActual.id = "indicadorPregunta";
+
+    let indicador = `${this.#preguntaActual + 1} / ${this.#listaPreguntas.length}`;
+
+    contePregActual.textContent = indicador;
     contedorProgreso.appendChild(contePregActual);
 
-    //Muestro pregunta
+    /*------Tiempo------*/
+    //Muestro el tiempo transcurrido en la pregunta
+    const conteTiempo = document.createElement("span");
+    conteTiempo.id = "tiempo";
+
+    this.#cronometro.mostrarCronometro(conteTiempo);    //Le paso un contenedor al cronometro para que muestre el tiempo
+
+    contedorProgreso.appendChild(conteTiempo);
+
+    return contedorProgreso;
+  }
+
+//Retorno un contenedor con la pregunta
+  static #contenedorPregunta(preg){
+    const contenedorPregunta = document.createElement("div");
+    contenedorPregunta.id = "pregunta"
     contenedorPregunta.innerHTML = preg.getPregunta();
+
+    return contenedorPregunta;
+  }
+
+//Retorno un contenedor con todas las opciones
+  static #contenedorOpciones(preg) {
+    const contenedorOpciones = document.createElement("div");
+    contenedorOpciones.id = "opciones";
 
     //Muestro opciones como botones
     const fragmOpciones = document.createDocumentFragment();
     const opciones = Data.mezclar(preg.getOpciones());
 
     opciones.forEach((op) => {
-      const btnOpcion = document.createElement("button");
-      btnOpcion.textContent = op;
-      btnOpcion.value = op;
-      btnOpcion.addEventListener("click", () => {
-        cronometro.parar();
-        const tiempo = cronometro.getTiempo();
-        this.#escucharRespuesta(op, tiempo);
-      });
-      fragmOpciones.appendChild(btnOpcion);
+      fragmOpciones.appendChild(Interfaz.crearBoton(op,() => {
+                                                            this.#cronometro.parar();
+                                                            const tiempo = this.#cronometro.getTiempo();
+                                                            this.#escucharRespuesta(op, tiempo);
+                                                          }));
     });
     contenedorOpciones.appendChild(fragmOpciones);
-    cronometro.reiniciar()
-    cronometro.iniciar();
+    return contenedorOpciones;
   }
 
+//ESCUCHO LA RESPUESTA DEL USUARIO
   static #escucharRespuesta(opcion, tiempo) {
 
     const pregunta = this.#listaPreguntas[this.#preguntaActual];
@@ -592,39 +601,57 @@ class Juego {
     if (opcion === respuesta) {
       //Comparo si la respuesta es correcta
       alert("Correcto");
-      this.jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo); //registro la respuesta en el jugador
+      this.#jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo); //registro la respuesta en el jugador
     } else {
       alert(`Incorrecta, la respuesta era: ${respuesta}`);
 
-      this.jugador.setTiempos(tiempo);
+      this.#jugador.setTiempos(tiempo);
     }
 
     this.#preguntaActual++; //Pasa a la siguiente pregunta
 
     if (this.#preguntaActual < this.#listaPreguntas.length) {
       //Controlo si quedan preguntas
-      this.#mostrarPregunta(this.#listaPreguntas[this.#preguntaActual]);
+      this.#interfazJuego();
     } else {
       console.log("fin del juego");
       this.endGame();
     }
   }
 
+//Limpio la pantalla e inserto dinamicamente la interfaz endGame
   static endGame() {
+    const estadisticas = this.#jugador.estadistica();    //Recupero las estadisticas del jugador
     const contenedorJuego = document.querySelector(".juego");
-    const contedorProgreso = document.querySelector(".progreso");
-    const contenedorOpciones = document.getElementById("opciones");
-    contenedorOpciones.textContent = ""; // Limpiar opciones
-    contedorProgreso.textContent = "";
+    contenedorJuego.textContent = "";
 
-    contedorProgreso.innerHTML = `<span>¡¡Fin del juego!!</span><span>-- Estadisticas --</span>`;
-    contedorProgreso.classList.add("fin");
-    this.jugador.mostrarEstadistica();
-    Interfaz.crearBotonInicio(contenedorOpciones, contenedorJuego);
-    this.#preguntaActual = 0;
+    const fragmento = document.createDocumentFragment();
+//Cargo el titulo
+    const contTitulo = document.createElement("h2");
+    contTitulo.textContent = "Estadisticas";
+    fragmento.appendChild(contTitulo);
+
+//Cargo las estadisticas
+    const contEstadisticas = document.createElement("div");
+    contEstadisticas.innerHTML = `<span><span class="label">Puntuación final:</span> ${estadisticas.puntos}</span>
+                                  <span><span class="label">Preguntas correctas:</span> ${estadisticas.correctas}</span>
+                                  <span><span class="label">Preguntas Incorrectas:</span> ${estadisticas.incorrectas}</span>
+                                  <span><span class="label">Tiempo de la partida:</span> ${Cronometro.formatearHora(estadisticas.tiempoPartida)}</span>
+                                  <span><span class="label">Tiempo promedio:</span> ${Cronometro.formatearHora(estadisticas.tiempoPromedio)}</span>
+                                  `;
+    fragmento.appendChild(contEstadisticas);
+//Cargo el boton para ir a inicio
+    fragmento.appendChild(Interfaz.crearBoton("inicio", ()=>{
+      Interfaz.cambiarVista(document.querySelector(".inicio"))
+    }));
+
+    contenedorJuego.appendChild(fragmento);
+
+    this.#preguntaActual = 0; //vuelvo la pregunta actual a 0
   }
 }
 
+//CREO LA PREGUNTA CON SUS ATRIBUTOS Y METODOS
 class Pregunta {
   static cantOpciones = 4;
   #pregunta;
@@ -657,8 +684,7 @@ class Pregunta {
 
         case "flag":
           if (pais?.flags) {
-            this.#pregunta = `<p>¿Qué país está representado por la siguiente bandera?</p><img src="${pais.flags.svg}">
-            `;
+            this.#pregunta = `<p>¿Qué país está representado por la siguiente bandera?</p><img src="${pais.flags.svg}">`;
             this.#respuesta = pais.name.common;
             this.#puntos = 5;
           }
@@ -721,6 +747,7 @@ class Pregunta {
   }
 }
 
+//CREO EL JUGADOR CON SUS ATRIBUTOS Y METODOS
 class Jugador {
   #puntaje;
   #correctas;
@@ -755,33 +782,28 @@ class Jugador {
     this.#correctas++;
   }
 
-  mostrarEstadistica() {
-    const estadistica = document.getElementById("pregunta");
-    const cantPreguntas = this.#tiempos.length;
+  estadistica() {
+    const estadistica = {};
 
-    estadistica.innerHTML = `Puntuación final: ${this.#puntaje}<br>
-                              Preguntas correctas: ${this.#correctas}<br>
-                              Preguntas Incorrectas: ${
-                                cantPreguntas - this.#correctas
-                              }<br>
-                              Tiempo de la partida: ${Cronometro.formatearHora(
-                                Cronometro.sumarTiempos(this.#tiempos)
-                              )}<br>
-                              Tiempo promedio: ${Cronometro.formatearHora(
-                                Cronometro.calcularPromedio(this.#tiempos)
-                              )}`;
+    estadistica.puntos = this.#puntaje;
+    estadistica.correctas = this.#correctas;
+    estadistica.incorrectas = this.#tiempos.length - this.#correctas;
+    estadistica.tiempoPartida = Cronometro.sumarTiempos(this.#tiempos);
+    estadistica.tiempoPromedio = Cronometro.calcularPromedio(this.#tiempos);
+
+    return estadistica;
   }
 }
 
+//CREO EL CRONOMETRO CON SUS ATRIBUTOS Y METODOS
 class Cronometro {
-  #tiempo;
-  #temporizador;
-  #callback;
+  #tiempo;          //guardo el tiempo actual
+  #temporizador;    //llamo al setIntervalo
+  #contedor;
 
-  constructor(callback) {
+  constructor() {
     this.#tiempo = 0;
     this.#temporizador = null;
-    this.#callback = callback;
   }
 
   getTiempo() {
@@ -789,13 +811,13 @@ class Cronometro {
   }
 
   iniciar() {
-    if (!this.#temporizador) {
+    if (!this.#temporizador) {        //evito multiples intervalos
       this.#temporizador = setInterval(() => {
         this.#tiempo++;
-        if (this.#callback) {
-          this.#callback(this.#tiempo);
+        if(this.#contedor){
+          this.#contedor.textContent = Cronometro.formatearHora(this.#tiempo);
         }
-      }, 10);
+      }, 10);   //Actualiza en centesimas de segundo
     }
   }
 
@@ -809,6 +831,10 @@ class Cronometro {
   reiniciar() {
     this.parar();
     this.#tiempo = 0;
+  }
+
+  mostrarCronometro(contenedor){
+    this.#contedor = contenedor;
   }
 
   static formatearHora(centesimas) {
