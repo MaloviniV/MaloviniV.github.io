@@ -1,0 +1,26 @@
+{
+  "name": "malovinivtrivia.github.io",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaloviniV/MaloviniV.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaloviniV/MaloviniV.github.io/issues"
+  },
+  "homepage": "https://github.com/MaloviniV/MaloviniV.github.io#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "malovinivtrivia.github.io": "file:",
+    "node-fetch": "^3.3.2"
+  }
+}
