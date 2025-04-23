@@ -70,7 +70,6 @@ button{
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  padding: 10px;
 }
 
 button:hover{
