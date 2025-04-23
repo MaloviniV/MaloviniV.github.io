@@ -21,6 +21,7 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
-    "malovinivtrivia.github.io": "file:"
+    "malovinivtrivia.github.io": "file:",
+    "node-fetch": "^3.3.2"
   }
 }
