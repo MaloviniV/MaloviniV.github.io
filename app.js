@@ -8,7 +8,7 @@ const app = express(); //Creo el objeto express
 
 app.use(express.static("public"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
 
-app.get("api/all", async (req, res) => {      //relaciono el server con el clientes
+app.get("/api/all", async (req, res) => {      //relaciono el server con el clientes
   try {
     const pregunta = await fetch(URL_API);    //solicito a la api
     const data = await pregunta.json();
