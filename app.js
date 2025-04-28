@@ -6,7 +6,7 @@ const URL_API = "https://restcountries.com/v3.1/all";
 const puerto = process.env.puerto || 3000;
 const app = express(); //Creo el objeto express
 
-app.use(express.static("publico"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
+app.use(express.static(__dirname + "/public"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
 
 app.get("/api/all", async (req, res) => {      //relaciono el server con el clientes
   try {
