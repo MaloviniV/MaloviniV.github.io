@@ -3,7 +3,7 @@ import fetch from "node-fetch"; //importo fetch para Node.js
 import fs from "fs/promises";
 
 const URL_API = "https://restcountries.com/v3.1/all";
-const puerto = 3000;
+const puerto = process.env.puerto || 3000;
 const app = express(); //Creo el objeto express
 
 app.use(express.static("publico"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
