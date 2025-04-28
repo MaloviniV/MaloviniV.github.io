@@ -2,11 +2,19 @@ import express from "express"; //importo express prueba
 import fetch from "node-fetch"; //importo fetch para Node.js
 import fs from "fs/promises";
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 const URL_API = "https://restcountries.com/v3.1/all";
 const puerto = process.env.puerto || 3000;
 const app = express(); //Creo el objeto express
 
-app.use(express.static(__dirname + "/public"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, 'publico')));
+
+//app.use(express.static(__dirname + "/public"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
 
 app.get("/api/all", async (req, res) => {      //relaciono el server con el clientes
   try {
