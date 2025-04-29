@@ -12,9 +12,14 @@ const app = express(); //Creo el objeto express
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, 'publico')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use(express.static(__dirname + "/public"));  //Permite acceder al html solo poniendo http://localhost:3000/ 
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 app.get("/api/all", async (req, res) => {      //relaciono el server con el clientes
   try {
