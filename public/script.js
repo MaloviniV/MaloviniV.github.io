@@ -1,7 +1,7 @@
 //CREO BOTONES, maneja vistas importantes y INICIALIZO LA APLICACION
 class Interfaz {      
 
-  static init(preguntas) {
+  static init(preguntas=10) {
     //Inicializa elementos vistas importantes
     this.btnJugar = document.getElementById("btnJugar");
     this.btnRanking = document.getElementById("btnRanking");
@@ -24,8 +24,11 @@ class Interfaz {
       this.nombre.value = "";
       this.cambiarVista(this.juego);
     });
-    this.btnRanking.addEventListener("click", () => this.cambiarVista(this.ranking));
-    this.btnInicio.addEventListener("click", () => this.cambiarVista(this.inicio));
+    this.btnRanking.addEventListener("click", async() => {
+      await Data.cargarRanking();
+      Ranking.interfazRanking();
+      this.cambiarVista(this.ranking);
+    });
   }
 
   static cambiarVista(vistaMostrar){
@@ -59,203 +62,17 @@ class Data {
   //VALIDAR DATOS DE LA RESP "capital","flag","borders"(CARGAR SOLO DATOS NECESARIOS)
   static listaPaises = [];
   static ranking = [];
-  static URL_API = "/api/all";
-  static URL_RANKING = "/api/ranking";
   
-  static async cargarPaises() {
+  static async cargarPaises() {    
+    const URL_API = "https://restcountries.com/v3.1/all";
+    
     try {
-      const answer = await fetch(this.URL_API);
+      const answer = await fetch(URL_API);    //solicito a la api
       const data = await answer.json();
-      this.listaPaises = data;
+      this.listaPaises = data;   //envio los datos a la API como respuesta
     } catch (error) {
       console.error("Error al cargar los datos:", error);
     }
-  }
-
-
-  static async cargarRanking() {
-    this.ranking = [
-      {
-        posicion: 1,
-        nombre: "Victor",
-        correctas: 15,
-        incorrectas: 5,
-        tiempo: "10:30",
-        promTiempo: "00:42",
-        puntaje: 150,
-      },
-      {
-        posicion: 2,
-        nombre: "Maria",
-        correctas: 20,
-        incorrectas: 2,
-        tiempo: "08:20",
-        promTiempo: "00:25",
-        puntaje: 200,
-      },
-      {
-        posicion: 3,
-        nombre: "Juan",
-        correctas: 10,
-        incorrectas: 8,
-        tiempo: "12:15",
-        promTiempo: "01:05",
-        puntaje: 100,
-      },
-      {
-        posicion: 4,
-        nombre: "Ana",
-        correctas: 12,
-        incorrectas: 3,
-        tiempo: "09:50",
-        promTiempo: "00:45",
-        puntaje: 120,
-      },
-      {
-        posicion: 5,
-        nombre: "Luis",
-        correctas: 8,
-        incorrectas: 4,
-        tiempo: "11:00",
-        promTiempo: "01:20",
-        puntaje: 80,
-      },
-      {
-        posicion: 6,
-        nombre: "Sofia",
-        correctas: 18,
-        incorrectas: 3,
-        tiempo: "09:05",
-        promTiempo: "00:30",
-        puntaje: 180,
-      },
-      {
-        posicion: 7,
-        nombre: "Carlos",
-        correctas: 14,
-        incorrectas: 4,
-        tiempo: "10:00",
-        promTiempo: "00:43",
-        puntaje: 140,
-      },
-      {
-        posicion: 8,
-        nombre: "Lucia",
-        correctas: 16,
-        incorrectas: 6,
-        tiempo: "10:30",
-        promTiempo: "00:39",
-        puntaje: 160,
-      },
-      {
-        posicion: 9,
-        nombre: "Diego",
-        correctas: 11,
-        incorrectas: 7,
-        tiempo: "13:10",
-        promTiempo: "01:10",
-        puntaje: 110,
-      },
-      {
-        posicion: 10,
-        nombre: "Carla",
-        correctas: 17,
-        incorrectas: 4,
-        tiempo: "09:30",
-        promTiempo: "00:35",
-        puntaje: 170,
-      },
-      {
-        posicion: 11,
-        nombre: "Andres",
-        correctas: 13,
-        incorrectas: 5,
-        tiempo: "11:20",
-        promTiempo: "00:52",
-        puntaje: 130,
-      },
-      {
-        posicion: 12,
-        nombre: "Marta",
-        correctas: 19,
-        incorrectas: 2,
-        tiempo: "08:40",
-        promTiempo: "00:28",
-        puntaje: 190,
-      },
-      {
-        posicion: 13,
-        nombre: "Javier",
-        correctas: 9,
-        incorrectas: 8,
-        tiempo: "12:45",
-        promTiempo: "01:25",
-        puntaje: 90,
-      },
-      {
-        posicion: 14,
-        nombre: "Lorena",
-        correctas: 20,
-        incorrectas: 1,
-        tiempo: "08:00",
-        promTiempo: "00:24",
-        puntaje: 200,
-      },
-      {
-        posicion: 15,
-        nombre: "Fernando",
-        correctas: 12,
-        incorrectas: 6,
-        tiempo: "10:50",
-        promTiempo: "00:54",
-        puntaje: 120,
-      },
-      {
-        posicion: 16,
-        nombre: "Patricia",
-        correctas: 15,
-        incorrectas: 5,
-        tiempo: "09:40",
-        promTiempo: "00:38",
-        puntaje: 150,
-      },
-      {
-        posicion: 17,
-        nombre: "Esteban",
-        correctas: 8,
-        incorrectas: 7,
-        tiempo: "13:30",
-        promTiempo: "01:41",
-        puntaje: 80,
-      },
-      {
-        posicion: 18,
-        nombre: "Gabriela",
-        correctas: 14,
-        incorrectas: 4,
-        tiempo: "10:20",
-        promTiempo: "00:44",
-        puntaje: 140,
-      },
-      {
-        posicion: 19,
-        nombre: "Raul",
-        correctas: 11,
-        incorrectas: 6,
-        tiempo: "12:00",
-        promTiempo: "00:55",
-        puntaje: 110,
-      },
-      {
-        posicion: 20,
-        nombre: "Isabel",
-        correctas: 16,
-        incorrectas: 3,
-        tiempo: "09:15",
-        promTiempo: "00:40",
-        puntaje: 160,
-      },
-    ];
   }
 
   static getListaPaises() {
@@ -280,200 +97,40 @@ class Data {
     return [...lista].sort(() => Math.random() - 0.5); //Mezclo las opciones y devuelvo un nuevo array
   }
 
-
-/*
-  static async cargarPaises() {
-    this.listaPaises = [
-      {
-        name: "Argentina",
-        flags: "🇦🇷",
-        borders: ["Chile", "Bolivia", "Paraguay", "Uruguay", "Brasil"],
-        capital: "Buenos Aires",
-      },
-      {
-        name: "Brasil",
-        flags: "🇧🇷",
-        borders: [
-          "Argentina",
-          "Uruguay",
-          "Paraguay",
-          "Bolivia",
-          "Perú",
-          "Colombia",
-          "Venezuela",
-        ],
-        capital: "Brasilia",
-      },
-      {
-        name: "Chile",
-        flags: "🇨🇱",
-        borders: ["Argentina", "Bolivia", "Perú"],
-        capital: "Santiago",
-      },
-      {
-        name: "Uruguay",
-        flags: "🇺🇾",
-        borders: ["Argentina", "Brasil"],
-        capital: "Montevideo",
-      },
-      {
-        name: "Perú",
-        flags: "🇵🇪",
-        borders: ["Brasil", "Bolivia", "Chile", "Colombia", "Ecuador"],
-        capital: "Lima",
-      },
-      {
-        name: "Colombia",
-        flags: "🇨🇴",
-        borders: ["Brasil", "Perú", "Ecuador", "Panamá", "Venezuela"],
-        capital: "Bogotá",
-      },
-      {
-        name: "Venezuela",
-        flags: "🇻🇪",
-        borders: ["Brasil", "Colombia", "Guyana"],
-        capital: "Caracas",
-      },
-      {
-        name: "Bolivia",
-        flags: "🇧🇴",
-        borders: ["Argentina", "Brasil", "Chile", "Paraguay", "Perú"],
-        capital: "Sucre",
-      },
-      {
-        name: "Paraguay",
-        flags: "🇵🇾",
-        borders: ["Argentina", "Bolivia", "Brasil"],
-        capital: "Asunción",
-      },
-      {
-        name: "Ecuador",
-        flags: "🇪🇨",
-        borders: ["Colombia", "Perú"],
-        capital: "Quito",
-      },
-      {
-        name: "México",
-        flags: "🇲🇽",
-        borders: ["Estados Unidos", "Guatemala", "Belice"],
-        capital: "Ciudad de México",
-      },
-      {
-        name: "Estados Unidos",
-        flags: "🇺🇸",
-        borders: ["Canadá", "México"],
-        capital: "Washington D.C.",
-      },
-      {
-        name: "Canadá",
-        flags: "🇨🇦",
-        borders: ["Estados Unidos"],
-        capital: "Ottawa",
-      },
-      {
-        name: "España",
-        flags: "🇪🇸",
-        borders: ["Francia", "Portugal", "Andorra"],
-        capital: "Madrid",
-      },
-      {
-        name: "Francia",
-        flags: "🇫🇷",
-        borders: [
-          "España",
-          "Bélgica",
-          "Luxemburgo",
-          "Alemania",
-          "Suiza",
-          "Italia",
-        ],
-        capital: "París",
-      },
-      {
-        name: "Alemania",
-        flags: "🇩🇪",
-        borders: [
-          "Dinamarca",
-          "Polonia",
-          "República Checa",
-          "Austria",
-          "Suiza",
-          "Francia",
-        ],
-        capital: "Berlín",
-      },
-      {
-        name: "Italia",
-        flags: "🇮🇹",
-        borders: ["Francia", "Suiza", "Austria", "Eslovenia"],
-        capital: "Roma",
-      },
-      {
-        name: "Rusia",
-        flags: "🇷🇺",
-        borders: [
-          "Noruega",
-          "Finlandia",
-          "Estonia",
-          "Letonia",
-          "Lituania",
-          "Polonia",
-          "China",
-        ],
-        capital: "Moscú",
-      },
-      {
-        name: "China",
-        flags: "🇨🇳",
-        borders: ["Rusia", "Mongolia", "Corea del Norte", "Vietnam", "India"],
-        capital: "Pekín",
-      },
-      {
-        name: "India",
-        flags: "🇮🇳",
-        borders: ["Pakistán", "China", "Nepal", "Bután", "Bangladesh"],
-        capital: "Nueva Delhi",
-      },
-    ];
-  }
-
-  static getPaises() {
-    return this.listaPaises;
-  }
-
-  static async cargarArchivo(){
+  static async cargarRanking() {
     try {
-      const answer = await fetch(this.URL_RANKING);
-      const data = answer.json();
-      console.log(data);
-      this.listaRanking = data;
+      const respuesta = await fetch(`/ranking.txt`);
+      if(!respuesta.ok){
+        console.log(`Archivo no encontrado, creando uno nuevo.....`);
+        await this.actualizarRanking();
+        this.ranking = [];
+        console.log("Archivo creado correctamente desde CLIENTE");
+      }else{
+        this.ranking = await respuesta.json();
+        console.log(`Ranking cargado correctamente desde CLIENTE`);
+      }
     } catch (error) {
-      console.error("Error al cargar el archivo"+error);      
+      console.error(`Error al cargar el ranking desde CLIENTE: ${error.message}`);      
     }
   }
 
-  static getRanking(){
-    return this.listaRanking;
-  }
-
-  static setRanking(ranking){
-    const options = {
-      method: "POST",                           // Método HTTP PUT
-      headers: {
-        "Content-Type": "application/json",     // Indica que el cuerpo es JSON
-      },
-      body: JSON.stringify(ranking),       // Convierte el objeto a JSON
-    }
-
+  static async actualizarRanking(nuevoRanking=[]){
     try {
-      await fetch(this.URL_RANKING,options);
-      console.log("Ranking actualizado correctamente");      
+      const respuesta = await fetch("/ranking.txt",{
+        method: "POST",
+        headers: {"Content-Type": "application/json"},        
+        body: JSON.stringify(nuevoRanking)
+      });
+
+      if (!respuesta.ok) {
+        throw new Error(`Error al actualizar el ranking desde CLIENTE: ${respuesta.status} ${respuesta.statusText}`);        
+      }
+      
+      console.log(`Ranking actualizado correctamente desde CLIENTE`);
     } catch (error) {
-      console.error("Error al enviar el PUT al servidor:", error);      
+      console.error(`Error al actualizar el ranking desde CLIENTE: ${error.message}`);      
     }
   }
-  */  
-
 }
 
 //MANEJO EL JUEGO
@@ -649,6 +306,8 @@ static endGame() {
 
   contenedorJuego.appendChild(fragmento);
 
+  Ranking.actualizarRanking(estadisticas);
+
   this.#preguntaActual = 0; //vuelvo la pregunta actual a 0
 }
 }
@@ -787,6 +446,7 @@ class Jugador {
   estadistica() {
     const estadistica = {};
 
+    estadistica.nombre = this.nombre;
     estadistica.puntos = this.#puntaje;
     estadistica.correctas = this.#correctas;
     estadistica.incorrectas = this.#tiempos.length - this.#correctas;
@@ -794,6 +454,76 @@ class Jugador {
     estadistica.tiempoPromedio = Cronometro.calcularPromedio(this.#tiempos);
 
     return estadistica;
+  }
+}
+
+//MANEJO EL RANKING
+class Ranking {
+  static interfazRanking(){
+    const ranking = document.querySelector(".ranking");
+
+    ranking.innerHTML = this.crearTablaHTML();
+
+    ranking.appendChild(Interfaz.crearBoton("INICIO", ()=>{
+      Interfaz.cambiarVista(document.querySelector(".inicio"))
+    }));
+  }
+
+  static crearTablaHTML(){
+    const ranking = Data.ranking;
+    console.log(ranking);
+    
+    const filas = ranking.map((partida, index)=>{
+      return `<tr>
+                <td>${index+1}</td>
+                <td>${partida.nombre}</td>
+                <td>${partida.puntaje}</td>
+                <td>${partida.correctas}</td>
+                <td>${partida.incorrectas}</td>
+                <td>${partida.tiempo}</td>
+              </tr>`;
+    }).join("");
+
+    return `<h2>RANKING DE PARTIDAS</h2>
+            <div class="tabla">
+              <table>
+                <thead>
+                  <tr>
+                    <th>POSICION</th>
+                    <th>NOMBRE</th>
+                    <th>PUNTAJE</th>
+                    <th>CORRECTAS</th>
+                    <th>INCORRECTAS</th>
+                    <th>TIEMPO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filas}
+                </tbody>
+              </table>
+            </div>
+    `;
+  }
+
+  static actualizarRanking(estadisticas){
+    let ranking = Data.ranking;
+    ranking.push(estadisticas);   //Agrego las nuevas estadisticas
+    ranking = this.#ordenarRanking(ranking);  //Ordeno el ranking
+    ranking.slice(0,20);    //Recorto la lista a los primeros 20
+    
+    Data.actualizarRanking(ranking);
+  }
+
+  static #ordenarRanking(lista){
+    return lista.sort((a,b)=>{
+      if(a.puntaje !== b.puntaje){
+        return b.puntaje - a.puntaje;
+      } else if(b.correctas !== a.correctas){
+        return b.correctas - a.correctas;
+      } else {
+        return b.tiempo - a.tiempo;
+      }
+    });
   }
 }
 

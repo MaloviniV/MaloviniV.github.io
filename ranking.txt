@@ -1,0 +1,9 @@
+[
+  {
+    "puntos": 5,
+    "correctas": 1,
+    "incorrectas": 1,
+    "tiempoPartida": 134,
+    "tiempoPromedio": 67
+  }
+]
