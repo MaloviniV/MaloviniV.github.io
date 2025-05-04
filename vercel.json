@@ -15,5 +15,12 @@
       "src": "/(.*)",
       "dest": "app.js"
     }
-  ]
+  ],
+
+  "storage": {
+    "ranking": {
+      "type": "blob",
+      "path": "/RankingStore"
+    }
+  }
 }
