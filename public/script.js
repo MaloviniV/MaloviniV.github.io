@@ -97,38 +97,39 @@ class Data {
     return [...lista].sort(() => Math.random() - 0.5); //Mezclo las opciones y devuelvo un nuevo array
   }
 
+//SOLICITO LOS DATOS AL SERVIDOR Y LOS GUARDO EN VARIABLE RANKING
   static async cargarRanking() {
     try {
-      const respuesta = await fetch(`/ranking.txt`);
+      const respuesta = await fetch(`/ranking.txt`);    //Solicito los datos al servidor
       if(!respuesta.ok){
-        console.log(`Archivo no encontrado, creando uno nuevo.....`);
-        await this.actualizarRanking();
+        console.log(`Archivo no encontrado, creando uno nuevo.....CLIENTE`);   //Validacion hecha en el servidor NO DEBERIA EJECUTARSE
+        await this.guardarRanking();
         this.ranking = [];
         console.log("Archivo creado correctamente desde CLIENTE");
       }else{
-        this.ranking = await respuesta.json();
-        console.log(`Ranking cargado correctamente desde CLIENTE`);
+        this.ranking = await respuesta.json();    //Guardo los datos en formato JSON
+        console.log(`Datos del servidor recuperados correctamente`);
       }
     } catch (error) {
-      console.error(`Error al cargar el ranking desde CLIENTE: ${error.message}`);      
+      console.error(`Error al cargar el ranking desde CLIENTE: ${error.message}`);
     }
   }
 
-  static async actualizarRanking(nuevoRanking=[]){
+  static async guardarRanking(nuevoRanking=[]){
     try {
       const respuesta = await fetch("/ranking.txt",{
         method: "POST",
         headers: {"Content-Type": "application/json"},        
         body: JSON.stringify(nuevoRanking)
       });
-
+//lanzo un error si laa respuesta no es 200
       if (!respuesta.ok) {
-        throw new Error(`Error al actualizar el ranking desde CLIENTE: ${respuesta.status} ${respuesta.statusText}`);        
+        throw new Error(`Error al actualizar el ranking desde CLIENTE: ${respuesta.status} ${respuesta.statusText}`);
       }
       
       console.log(`Ranking actualizado correctamente desde CLIENTE`);
     } catch (error) {
-      console.error(`Error al actualizar el ranking desde CLIENTE: ${error.message}`);      
+      console.error(`Error al actualizar el ranking desde CLIENTE: ${error}`);      
     }
   }
 }
@@ -459,17 +460,17 @@ class Jugador {
 
 //MANEJO EL RANKING
 class Ranking {
-  static interfazRanking(){
+  static interfazRanking(){     //GENERO LA INTERFAZ DEL RANKING
     const ranking = document.querySelector(".ranking");
 
-    ranking.innerHTML = this.crearTablaHTML();
+    ranking.innerHTML = this.#crearTablaHTML();
 
     ranking.appendChild(Interfaz.crearBoton("INICIO", ()=>{
       Interfaz.cambiarVista(document.querySelector(".inicio"))
     }));
   }
 
-  static crearTablaHTML(){
+  static #crearTablaHTML(){     //Creo la tabla HTML
     const ranking = Data.ranking;
     console.log(ranking);
     
@@ -477,10 +478,10 @@ class Ranking {
       return `<tr>
                 <td>${index+1}</td>
                 <td>${partida.nombre}</td>
-                <td>${partida.puntaje}</td>
+                <td>${partida.puntos}</td>
                 <td>${partida.correctas}</td>
                 <td>${partida.incorrectas}</td>
-                <td>${partida.tiempo}</td>
+                <td>${Cronometro.formatearHora(partida.tiempoPartida)}</td>
               </tr>`;
     }).join("");
 
@@ -505,23 +506,23 @@ class Ranking {
     `;
   }
 
-  static actualizarRanking(estadisticas){
+  static actualizarRanking(estadisticas){     //ACTUALIZO EL RANKING
     let ranking = Data.ranking;
     ranking.push(estadisticas);   //Agrego las nuevas estadisticas
     ranking = this.#ordenarRanking(ranking);  //Ordeno el ranking
     ranking.slice(0,20);    //Recorto la lista a los primeros 20
     
-    Data.actualizarRanking(ranking);
+    Data.guardarRanking(ranking);
   }
 
-  static #ordenarRanking(lista){
+  static #ordenarRanking(lista){        //ORDENO EL RANKING
     return lista.sort((a,b)=>{
-      if(a.puntaje !== b.puntaje){
-        return b.puntaje - a.puntaje;
+      if(a.puntos !== b.puntos){
+        return b.puntos - a.puntos;
       } else if(b.correctas !== a.correctas){
         return b.correctas - a.correctas;
       } else {
-        return b.tiempo - a.tiempo;
+        return b.tiempoPartida - a.tiempoPartida;
       }
     });
   }
@@ -590,4 +591,4 @@ class Cronometro {
   }
 }
 
-Interfaz.init(2);
+Interfaz.init();

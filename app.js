@@ -21,7 +21,7 @@ app.get("/ranking.txt", async (req, res) => {
       const archivo = await fs.readFile(archivoRanking,"utf-8");
       const datos = JSON.parse(archivo);  //Parseo el texto a JSON
 
-      console.log(`Datos devueltos: ${JSON.stringify(datos, null, 2)}`);      
+      console.log(`Datos enviados: ${JSON.stringify(datos, null, 2)}`);
       res.status(200).json(datos);    //Respondo con los datos en formato JSON
       
   } catch (error) {
