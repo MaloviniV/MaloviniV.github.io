@@ -20,7 +20,7 @@
   "storage": {
     "ranking": {
       "type": "blob",
-      "path": "/RankingStore"
+      "path": "/ranking-storage"
     }
-  }
+  }  
 }
