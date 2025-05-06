@@ -11,6 +11,13 @@ class Interfaz {
     this.ranking = document.querySelector(".ranking");
     this.juego = document.querySelector(".juego");
 
+    // Evitar números en el campo de nombre
+    this.nombre.addEventListener("keydown", (event) => {    
+      if (event.key.match(/[0-9]/)){
+        event.preventDefault(); // Bloquea la tecla numérica
+      }
+    });
+
     this.btnJugar.addEventListener("click", async () => {
       const txtNombre = this.nombre.value.trim(); // Elimina los espacios en blanco al inicio y al final del nombre
       if (!txtNombre) {
@@ -252,29 +259,44 @@ class Juego {
 
 //ESCUCHO LA RESPUESTA DEL USUARIO
   static #escucharRespuesta(opcion, tiempo) {
-
     const pregunta = this.#listaPreguntas[this.#preguntaActual];
     const respuesta = pregunta.getRespuesta();
-
+    
+    const contPreg = document.querySelector("#pregunta");
+    
+    const botonCorrecto = document.querySelector(`button[value="${respuesta}"]`);
+    botonCorrecto.style.backgroundColor= "green";
+    
+    //Comparo si la respuesta es correcta
     if (opcion === respuesta) {
-      //Comparo si la respuesta es correcta
-      alert("Correcto");
+      contPreg.innerHTML = `<h3 style="color: green; font-size: 25px;">¡CORRECTO!</h3>
+                            <span style="color: green;">Sumaste: ${pregunta.getPuntos()} puntos</span>`
       this.#jugador.respuestaCorrecta(pregunta.getPuntos(), tiempo); //registro la respuesta en el jugador
     } else {
-      alert(`Incorrecta, la respuesta era: ${respuesta}`);
-
+      contPreg.innerHTML = `<h3 style="color: red; font-size: 20px;">¡INCORRECTO!</h3>`
+      const botonIncorrecto = document.querySelector(`button[value="${opcion}"]`); 
+      botonIncorrecto.style.backgroundColor= "red";
       this.#jugador.setTiempos(tiempo);
     }
-
+    
     this.#preguntaActual++; //Pasa a la siguiente pregunta
 
-    if (this.#preguntaActual < this.#listaPreguntas.length) {
-      //Controlo si quedan preguntas
-      this.#interfazJuego();
-    } else {
-      console.log("fin del juego");
-      this.endGame();
-    }
+//Deshabilita los botones opcion
+    document.querySelectorAll("button").forEach((btn) => {
+      btn.disabled = true;
+      btn.style.pointerEvents = "none";
+    });
+
+    // Esperar 3 segundos antes de continuar
+    setTimeout(() => {
+      if (this.#preguntaActual < this.#listaPreguntas.length) {
+        // Controlo si quedan preguntas
+        this.#interfazJuego();
+      } else {
+        console.log("Fin del juego");
+        this.endGame();
+      }
+    }, 3000);
   }
 
 //Limpio la pantalla e inserto dinamicamente la interfaz endGame

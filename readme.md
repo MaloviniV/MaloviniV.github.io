@@ -27,7 +27,7 @@ Asegúrate de tener instalado:
     - Ejecuta el siguiente comando en la terminal dentro de la carpeta del proyecto:
           ** npm install **
 
-    Esto instalará Express y node-fetch.
+    Esto instalará Express V5.1.0 y node-fetch V3.3.2.
 
 3. Ejecutar la aplicación
     - Para iniciar la app, usa:
