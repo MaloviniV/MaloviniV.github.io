@@ -282,7 +282,7 @@ class Juego {
     this.#preguntaActual++; //Pasa a la siguiente pregunta
 
 //Deshabilita los botones opcion
-    document.querySelectorAll("button").forEach((btn) => {
+    document.querySelectorAll("#opciones button").forEach((btn) => {
       btn.disabled = true;
       btn.style.pointerEvents = "none";
     });
