@@ -122,21 +122,35 @@ class Data {
     }
   }
 
-  static async guardarRanking(nuevoRanking=[]){
-    try {
-      const respuesta = await fetch("/ranking.txt",{
-        method: "POST",
-        headers: {"Content-Type": "application/json"},        
-        body: JSON.stringify(nuevoRanking)
-      });
-//lanzo un error si laa respuesta no es 200
-      if (!respuesta.ok) {
-        throw new Error(`Error al actualizar el ranking desde CLIENTE: ${respuesta.status} ${respuesta.statusText}`);
+  static async guardarRanking(nuevoRanking=[], intentos=10, lapso=8000){
+    for (let index = 0; index < intentos; index++) {    //Bucle para reintentar guardar el ranking
+      try {
+        const respuesta = await fetch("/ranking.txt",{
+          method: "POST",
+          headers: {"Content-Type": "application/json"},        
+          body: JSON.stringify(nuevoRanking)
+        });
+  //lanzo un error si laa respuesta no es 200
+        if (!respuesta.ok) {
+          if(respuesta.status === 503){     //Controlo si el servidor esta ocupado
+            console.warn(`¡¡¡Servidor ocupado!!! Reintentando...`)
+            await new Promise((final)=> setTimeout(final,lapso));   //Espero para volver a intentarlo
+            throw new Error(`¡¡¡Servidor ocupado!!! Reintentando...`);            
+          }else{
+            throw new Error(`Error al actualizar el ranking desde CLIENTE: ${respuesta.status} ${respuesta.statusText}`);
+          }  
+        }else{
+          console.log(`Ranking actualizado correctamente desde CLIENTE`);
+          return true;
+        }
+        
+      } catch (error) {
+        console.error(`Error al actualizar el ranking desde CLIENTE: ${error}`);
+        if (i === intentos - 1) {
+          console.error("Se agotaron los intentos para actualizar el ranking.");
+          return false;
+        }
       }
-      
-      console.log(`Ranking actualizado correctamente desde CLIENTE`);
-    } catch (error) {
-      console.error(`Error al actualizar el ranking desde CLIENTE: ${error}`);      
     }
   }
 }
@@ -282,7 +296,7 @@ class Juego {
     this.#preguntaActual++; //Pasa a la siguiente pregunta
 
 //Deshabilita los botones opcion
-    document.querySelectorAll("button").forEach((btn) => {
+    document.querySelectorAll("button.opciones").forEach((btn) => {
       btn.disabled = true;
       btn.style.pointerEvents = "none";
     });

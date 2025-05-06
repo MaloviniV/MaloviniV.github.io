@@ -43,26 +43,36 @@ app.get("/ranking.txt", async (req, res) => {
 });
 
 //RUTA PARA MODIFICAR O CREAR EL ARCHIVO RANKING.TXT
+let escribiendo = false;
 app.post("/ranking.txt",async (req, res) => {
   try {
-      let nuevoRanking = req.body;    //Recupero el cuerpo del requerimiento (datos JSON)
+    if(escribiendo){
+      console.error("¡¡¡Servidor ocupado!!!");      
+      return res.status(503).send("¡¡¡Servidor ocupado!!!");  //Retorno Servidor ocupado
+    }else{
+      escribiendo=true;   //Ocupo el servidor
+    }
+
+    let nuevoRanking = req.body;    //Recupero el cuerpo del requerimiento (datos JSON)
       
 //Valido que el ranking no este vacio y lo formateo para guardarlo de una forma legible
-      if (!nuevoRanking) {
-        console.log("Ranking no proporcionado al POST");
-        return res.status(400).send("Ranking no proporcionado" );
-      }else{
-        nuevoRanking = JSON.stringify(nuevoRanking,null,2);     //Parseo el JSON a String para guardarlo
-      }
+    if (!nuevoRanking) {
+      console.log("Ranking no proporcionado al POST");
+      return res.status(400).send("Ranking no proporcionado" );
+    }else{
+      nuevoRanking = JSON.stringify(nuevoRanking,null,2);     //Parseo el JSON a String para guardarlo
+    }
 
-      await fs.writeFile(archivoRanking,nuevoRanking);
+    await fs.writeFile(archivoRanking,nuevoRanking);
 
-      console.log("Ranking actualizado correctamente");
-      res.status(200).send("Ranking actualizado");
+    console.log("Ranking actualizado correctamente");
+    res.status(200).send("Ranking actualizado");
   } catch (error) {
     console.error("ERROR al actualizar el ranking:" + error);
     res.status(500).send("ERROR al actualizar el ranking");
-  }  
+  } finally {
+    escribiendo = false; //Desocupo el servidor
+  }
 });
 
 //Middleware para manejar las rutas no encontradas

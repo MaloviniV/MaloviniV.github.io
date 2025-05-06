@@ -1,0 +1,10 @@
+[
+  {
+    "nombre": "d",
+    "puntos": 24,
+    "correctas": 6,
+    "incorrectas": 4,
+    "tiempoPartida": 643,
+    "tiempoPromedio": 64.3
+  }
+]
